@@ -7,6 +7,7 @@ import icu.junyao.crm.utils.MD5Util;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -25,12 +26,30 @@ public class UserController {
     @ResponseBody
     @RequestMapping("/login.do")
     public Map login(HttpServletRequest request, String loginAct, String loginPwd) throws LoginException {
+        Map<String, Object> map = new HashMap<>(2);
         loginPwd = MD5Util.getMD5(loginPwd);
         String ip = request.getRemoteAddr();
         User user = userService.login(loginAct, loginPwd, ip);
         request.getSession().setAttribute("user", user);
-        Map<String, Boolean> map = new HashMap<>(2);
         map.put("success", true);
+        map.put("view", "settings/workbenchIndex.do");
         return map;
+    }
+
+    @RequestMapping("/activityDetail.do")
+    public String activityDetail() {
+        return "activity/detail";
+    }
+    @RequestMapping("/activityIndex.do")
+    public String activityIndex() {
+        return "activity/index";
+    }
+    @RequestMapping("/workbenchIndex.do")
+    public String workbenchIndex() {
+        return "workbench/index";
+    }
+    @RequestMapping("/mainIndex.do")
+    public String mainIndex() {
+        return "main/index";
     }
 }
