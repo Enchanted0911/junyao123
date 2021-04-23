@@ -15,8 +15,8 @@
     </bean>
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
-        <property name="basePackage" value="icu.junyao.dao" />
+        <property name="basePackage" value="icu.junyao.crm.settings.dao" />
     </bean>
-    <context:component-scan base-package="icu.junyao.service" />
+    <context:component-scan base-package="icu.junyao.crm.settings.service" />
 
 </beans>

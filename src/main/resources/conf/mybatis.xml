@@ -7,10 +7,10 @@
         <setting name="logImpl" value="STDOUT_LOGGING"/>
     </settings>
     <typeAliases>
-        <package name="icu.junyao.domain"/>
+        <package name="icu.junyao.crm.settings.domain"/>
     </typeAliases>
     <mappers>
-        <package name="icu.junyao.dao"/>
+        <package name="icu.junyao.crm.settings.dao"/>
     </mappers>
 </configuration>
         <!-- mybatis的主配置信息  -->

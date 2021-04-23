@@ -184,7 +184,7 @@
                 <h2 class="heading">Project</h2>
                 <div class="row">
                     <div class="col-md-6">
-                        <p>It's a CRM project <a href="static/html/crm.html" style="color: #95999c"><i
+                        <p>It's a CRM project <a href="static/crm/index.html" style="color: #95999c"><i
                                 class="fa fa-rocket"></i>show
                             me!</a></p>
                     </div>
