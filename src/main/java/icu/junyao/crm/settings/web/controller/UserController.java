@@ -34,11 +34,6 @@ public class UserController {
         map.put("view", "settings/workbenchIndex.do");
         return map;
     }
-
-    @RequestMapping("/activityDetail.do")
-    public String activityDetail() {
-        return "activity/detail";
-    }
     @RequestMapping("/activityIndex.do")
     public String activityIndex() {
         return "activity/index";

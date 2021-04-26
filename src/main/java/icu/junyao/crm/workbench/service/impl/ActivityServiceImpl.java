@@ -1,16 +1,17 @@
 package icu.junyao.crm.workbench.service.impl;
 
-import icu.junyao.crm.settings.dao.UserDao;
 import icu.junyao.crm.settings.domain.User;
+import icu.junyao.crm.utils.DateTimeUtil;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.dao.ActivityDao;
 import icu.junyao.crm.workbench.dao.ActivityRemarkDao;
 import icu.junyao.crm.workbench.domain.Activity;
+import icu.junyao.crm.workbench.domain.ActivityRemark;
 import icu.junyao.crm.workbench.service.ActivityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,14 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public Map<String, Object> activityRemarkSave(ActivityRemark activityRemark) {
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("flag", activityRemarkDao.remarkSave(activityRemark) == 1);
+        map.put("activityRemark", activityRemark);
+        return map;
+    }
+
+    @Override
     public Map<String, Object> getUserListAndActivity(String id) {
         List<User> uList = activityDao.activityGetUserList();
         Activity activity = activityDao.getActivityById(id);
@@ -75,5 +84,34 @@ public class ActivityServiceImpl implements ActivityService {
     public String activityUpdate(Activity activity) {
         int num = activityDao.activityUpdate(activity);
         return num == 1 ? "true" : "false";
+    }
+
+    @Override
+    public Activity activityDetail(String id) {
+        return activityDao.activityDetail(id);
+    }
+
+    @Override
+    public List<ActivityRemark> getRemarkListByActivityId(String activityId) {
+        return activityRemarkDao.getRemarkListByActivityId(activityId);
+    }
+
+    @Override
+    public String activityRemoveRemark(String id) {
+        return activityRemarkDao.removeRemarkById(id) == 1 ? "true" : "false";
+    }
+
+    @Override
+    public Map<String, Object> activityUpdateRemark(HttpServletRequest request, String id, String noteContent) {
+        Map<String, Object> map = new HashMap<>(8);
+        ActivityRemark activityRemark = new ActivityRemark();
+        activityRemark.setId(id);
+        activityRemark.setNoteContent(noteContent);
+        activityRemark.setEditTime(DateTimeUtil.getSysTime());
+        activityRemark.setEditBy(((User)request.getSession().getAttribute("user")).getName());
+        activityRemark.setEditFlag("1");
+        map.put("flag", activityRemarkDao.remarkUpdate(activityRemark) == 1);
+        map.put("activityRemark", activityRemark);
+        return map;
     }
 }

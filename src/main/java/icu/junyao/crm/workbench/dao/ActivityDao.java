@@ -57,4 +57,11 @@ public interface ActivityDao {
      * @return 修改记录条数 1 为成功 0 为失败
      */
     int activityUpdate(Activity activity);
+
+    /**
+     * 根据id查询单个市场活动返回给市场活动详情页
+     * @param id 要查询的id
+     * @return 被查询的市场活动
+     */
+    Activity activityDetail(String id);
 }

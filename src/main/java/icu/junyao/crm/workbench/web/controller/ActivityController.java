@@ -5,10 +5,12 @@ import icu.junyao.crm.utils.DateTimeUtil;
 import icu.junyao.crm.utils.UUIDUtil;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.domain.Activity;
+import icu.junyao.crm.workbench.domain.ActivityRemark;
 import icu.junyao.crm.workbench.service.ActivityService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +62,7 @@ public class ActivityController {
     }
     @ResponseBody
     @RequestMapping("/activity/getUserListAndActivity.do")
-    public Map<String, Object> doGetUserListAndActivity(HttpServletRequest request, String id) {
+    public Map<String, Object> doGetUserListAndActivity(String id) {
         // 这种情况复用率不高, 使用map打包
         return activityService.getUserListAndActivity(id);
     }
@@ -71,5 +73,46 @@ public class ActivityController {
         activity.setEditTime(DateTimeUtil.getSysTime());
         activity.setEditBy(((User)request.getSession().getAttribute("user")).getName());
         return activityService.activityUpdate(activity);
+    }
+
+    @ResponseBody
+    @RequestMapping("/activity/detail.do")
+    public ModelAndView doActivityDetail(String id) {
+        ModelAndView modelAndView = new ModelAndView();
+        Activity activity = activityService.activityDetail(id);
+        modelAndView.addObject("activity", activity);
+        modelAndView.setViewName("activity/detail");
+        return modelAndView;
+    }
+
+    @ResponseBody
+    @RequestMapping("/activity/getRemarkListByActivityId.do")
+    public List<ActivityRemark> doGetRemarkListByActivityId(String activityId) {
+        return activityService.getRemarkListByActivityId(activityId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/activity/removeRemark.do")
+    public String doActivityRemoveRemark(String id) {
+        return activityService.activityRemoveRemark(id);
+    }
+
+    @ResponseBody
+    @RequestMapping("/activity/remarkSave.do")
+    public Map<String, Object> doActivityRemarkSave(HttpServletRequest request, String noteContent, String activityId) {
+        ActivityRemark activityRemark = new ActivityRemark();
+        activityRemark.setActivityId(activityId);
+        activityRemark.setNoteContent(noteContent);
+        activityRemark.setCreateBy(((User)request.getSession().getAttribute("user")).getName());
+        activityRemark.setCreateTime(DateTimeUtil.getSysTime());
+        activityRemark.setId(UUIDUtil.getUUID());
+        activityRemark.setEditFlag("0");
+        return activityService.activityRemarkSave(activityRemark);
+    }
+
+    @ResponseBody
+    @RequestMapping("/activity/updateRemark.do")
+    public Map<String, Object> doActivityUpdateRemark(HttpServletRequest request, String id, String noteContent) {
+        return activityService.activityUpdateRemark(request, id, noteContent);
     }
 }
