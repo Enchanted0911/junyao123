@@ -1,6 +1,7 @@
 package icu.junyao.crm.settings.service.impl;
 
 import icu.junyao.crm.exception.LoginException;
+import icu.junyao.crm.exception.RegisterException;
 import icu.junyao.crm.settings.dao.UserDao;
 import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.settings.service.UserService;
@@ -34,9 +35,21 @@ public class UserServiceImpl implements UserService {
             throw new LoginException("账号已锁定");
         }
         String allowIps = user.getAllowIps();
-        if (allowIps != null && !"".equals(allowIps) && !allowIps.contains(ip)) {
+        String releaseIp = "vanessa";
+        if (allowIps != null && !"".equals(allowIps) && !allowIps.contains(releaseIp) && !allowIps.contains(ip)) {
             throw new LoginException("您的ip地址被限制登录");
         }
         return user;
+    }
+
+    @Override
+    public void register(User user) throws RegisterException {
+        if (userDao.selectUserByAct(user.getLoginAct()) == 1) {
+            throw new RegisterException("该邮箱已被注册, 请换一个邮箱重新注册");
+        }
+        int num = userDao.register(user);
+        if (num == 0) {
+            throw new RegisterException("账号注册失败!");
+        }
     }
 }

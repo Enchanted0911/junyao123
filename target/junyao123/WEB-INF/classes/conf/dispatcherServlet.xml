@@ -22,6 +22,8 @@
             <mvc:mapping path="/settings/**"/>
             <mvc:mapping path="/workbench/**"/>
             <mvc:exclude-mapping path="/*/login.do"/>
+            <mvc:exclude-mapping path="/*/register.do"/>
+            <mvc:exclude-mapping path="/*/changeToRegister.do"/>
             <mvc:exclude-mapping path="/*/*/login.jsp"/>
             <mvc:exclude-mapping path="/*/*/index.html"/>
             <mvc:exclude-mapping path="/*/*/jquery/**"/>

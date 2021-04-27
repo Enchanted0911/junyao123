@@ -240,7 +240,7 @@
                         html += '<tr class="active">';
                         html += '<td><input type="checkbox" name="checkbox01" value="' + n.id + '"/></td>';
                         html += '<td><a style="text-decoration: none; cursor: pointer;"';
-                        html += 'onclick="window.location.href=\'workbench/activity/detail.do?id='+ n.id +'\';">' + n.name + '</a></td>';
+                        html += 'onclick="window.location.href=\'workbench/activity/detail.do?id=' + n.id + '\';">' + n.name + '</a></td>';
                         html += '<td>' + n.owner + '</td>';
                         html += '<td>' + n.startDate + '</td>';
                         html += '<td>' + n.endDate + '</td>';
@@ -394,9 +394,9 @@
                     <div class="form-group">
                         <label for="edit-description" class="col-sm-2 control-label">描述</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <%--                            关于文本域textarea :
-                                                                1. 一定要以标签对的形式呈现, 正常情况下标签对要紧紧的挨着
-                                                                2. textarea虽然是以标签对的形式呈现的，但是它也属于表单范畴，所有对于textarea的取值和复制操作都是统一使用 val() 方法，而不是html()
+                            <%--    关于文本域textarea :
+                              1. 一定要以标签对的形式呈现, 正常情况下标签对要紧紧的挨着
+                              2. textarea虽然是以标签对的形式呈现的，但是它也属于表单范畴，所有对于textarea的取值和复制操作都是统一使用 val() 方法，而不是html()
                             --%>
                             <textarea class="form-control" rows="3" id="edit-description"/></textarea>
                         </div>

@@ -67,8 +67,8 @@
             $.ajax({
                 url: "settings/login.do",
                 data: {
-                    "loginAct": loginAct,
-                    "loginPwd": loginPwd
+                    "loginAct": $("#loginAct").val(),
+                    "loginPwd": $("#loginPwd").val()
                 },
                 type: "post",
                 dataType: "json",
@@ -92,6 +92,8 @@
                         style="font-style: italic;font-family:'Times New Roman',serif;font-size: 20px">CRM</p></div>
                 <div style="height: 50px"><a href="index.jsp" class="navbar-link"
                                              style="color: black;text-align: center">back to JunYao home</a></div>
+                <div style="height: 50px"><a href="settings/changeToRegister.do" class="navbar-link btn btn-default btn-sm active" role="button"
+                                             style="color: #c9a3ff;text-align: center">注册</a></div>
             </div>
         </nav>
     </header>
