@@ -18,6 +18,7 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-beans:5.3.5" />
           <element id="library" level="project" name="Maven: org.springframework:spring-core:5.3.5" />
           <element id="library" level="project" name="Maven: org.springframework:spring-jcl:5.3.5" />
+          <element id="library" level="project" name="Maven: javax.servlet:jstl:1.2" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:5.3.5" />
           <element id="library" level="project" name="Maven: org.springframework:spring-aop:5.3.5" />
           <element id="library" level="project" name="Maven: org.springframework:spring-context:5.3.5" />

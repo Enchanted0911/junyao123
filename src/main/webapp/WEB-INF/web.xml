@@ -25,6 +25,9 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
+  <listener>
+    <listener-class>icu.junyao.crm.web.handler.MyListener</listener-class>
+  </listener>
 
   <filter>
     <filter-name>characterEncodingFilter</filter-name>

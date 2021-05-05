@@ -42,7 +42,7 @@
     </style>
     <script>
         $(function () {
-            if(window.top != window) {
+            if(window.top !== window) {
                 window.top.location = window.location;
             }
             $("#loginAct").focus();
@@ -104,7 +104,7 @@
             </div>
             <form action="" class="form-horizontal" role="form" style="position: relative;top: 20px">
                 <div class="form-group form-group-lg">
-                    <input id="loginAct" class="form-control" type="text" placeholder="用户名"/>
+                    <input id="loginAct" class="form-control" type="text" placeholder="登录邮箱"/>
                 </div>
                 <div class="form-group form-group-lg" style="position: relative; top: 10px">
                     <input id="loginPwd" class="form-control" type="password" placeholder="密码"/>

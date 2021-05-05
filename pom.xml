@@ -47,6 +47,15 @@
       <version>2.3.3</version>
       <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl -->
+    <!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+    </dependency>
+
+
 
     <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
     <dependency>
@@ -115,6 +124,13 @@
           <include>**/*.xml</include>
         </includes>
         <filtering>false</filtering>
+      </resource>
+      <resource>
+        <!--下方resources的文件夹名字要和自己项目的文件夹名确认一致才行 很多人就是忽略了名字不一致 -->
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
       </resource>
     </resources>
     <finalName>junyao123</finalName>

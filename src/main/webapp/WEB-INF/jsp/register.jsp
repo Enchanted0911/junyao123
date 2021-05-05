@@ -75,6 +75,9 @@
 
             // 注册邮箱失去焦点时验证邮件格式
             $("#registerAct").blur(function () {
+                $("#passwordMsg").html("");
+                $("#nameMsg").html("");
+                $("#confirmMsg").html("");
                 let email = $("#registerAct").val();
                 let regex = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
                 if (email === null || email === "") {
@@ -106,7 +109,10 @@
 
             // 注册名字失去焦点时验证姓名不能包含空格
             $("#registerName").blur(function () {
+                $("#passwordMsg").html("");
+                $("#confirmMsg").html("");
                 if ($("#registerName").attr("readonly") === "readonly") {
+                    $("#nameMsg").html("");
                     return;
                 }
                 let name = $("#registerName").val();
@@ -118,7 +124,7 @@
                     $("#submitBtn").attr("disabled", true);
                     return;
                 } else if (name.length > 9) {
-                    $("#nameMsg").html("用户名长度必须小于10位!");
+                    $("#nameMsg").html("用户名长度必须小于10位, 且不能包含任何空白符!");
                     $("#registerPwd").attr("readonly", true);
                     $("#confirmPwd").attr("readonly", true);
                     $("#submitBtn").attr("disabled", true);

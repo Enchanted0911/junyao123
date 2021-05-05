@@ -31,5 +31,4 @@
             <bean class="icu.junyao.crm.web.handler.UserInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
-
 </beans>

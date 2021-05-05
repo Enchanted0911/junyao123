@@ -20,6 +20,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<link rel="apple-touch-icon" sizes="114x114" href="static/imgs/title/cat.png">
 </head>
 <body>
-	<img src="static/crm/image/home.png" style="position: relative;top: -10px; left: -10px;"/>
+	<img src="static/crm/image/home.png" style="position: relative;background-size:cover;background-attachment:fixed;width: 100%;height: 100%"/>
 </body>
 </html>

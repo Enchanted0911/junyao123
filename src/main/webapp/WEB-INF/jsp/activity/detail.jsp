@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-// 只针对当前页面有效， 有必要需要在每个页面加上这段代码
-String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+    // 只针对当前页面有效， 有必要需要在每个页面加上这段代码
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 %>
 <!DOCTYPE html>
 <html>
@@ -27,12 +27,12 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
         // 删除单条备注信息
         function removeRemark(id) {
             $.ajax({
-                url : "workbench/activity/removeRemark.do",
-                data : {
-                    "id" : id
+                url: "workbench/activity/removeRemark.do",
+                data: {
+                    "id": id
                 },
-                type : "post",
-                success : function (data) {
+                type: "post",
+                success: function (data) {
                     if (data === "true") {
                         $("#" + id).remove();
                     } else {
@@ -53,13 +53,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
         // 展示备注信息
         function showRemarkList() {
             $.ajax({
-                url : "workbench/activity/getRemarkListByActivityId.do",
-                data : {
-                    "activityId" : "${activity.id}"
+                url: "workbench/activity/getRemarkListByActivityId.do",
+                data: {
+                    "activityId": "${activity.id}"
                 },
-                type : "get",
-                dataType : "json",
-                success : function (data) {
+                type: "get",
+                dataType: "json",
+                success: function (data) {
                     let html = "";
                     $.each(data, function (i, n) {
                         // javascript:void(0); 禁用超链接 只能以出发事件的形式操作
@@ -83,17 +83,99 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
         }
 
         $(function () {
+            // 删除操作
+            $("#deleteBtn").click(function () {
+                if (confirm("确定删除所选的记录吗 ? ")) {
+                    let param = "id=${activity.id}";
+                    $.ajax({
+                        url: "workbench/activity/delete.do",
+                        data: param,
+                        type: "post",
+                        success: function (data) {
+                            if (data === "true") {
+                                alert("删除成功, 即将会回到市场活动主界面");
+                                window.location.href = "settings/activityIndex.do";
+                            } else {
+                                alert("sorry!删除市场活动失败 !");
+                            }
+                        }
+                    })
+                }
+            });
+
+
+            // 打开修改的模态窗口
+            $("#editBtn").click(function () {
+                let id = "${activity.id}";
+                $.ajax({
+                    url: "workbench/activity/getUserListAndActivity.do",
+                    data: {
+                        "id": id
+                    },
+                    type: "get",
+                    dataType: "json",
+                    success: function (data) {
+                        // 处理所有者下拉框
+                        let html = "<option></option>";
+                        $.each(data.uList, function (i, n) {
+                            html += "<option value='" + n.id + "'>" + n.name + "</option>";
+                        })
+                        $("#edit-marketActivityOwner").html(html);
+
+                        // 处理单条Activity
+                        $("#edit-marketActivityOwner").val(data.activity.owner);
+                        $("#edit-marketActivityName").val(data.activity.name);
+                        $("#edit-startDate").val(data.activity.startDate);
+                        $("#edit-endDate").val(data.activity.endDate);
+                        $("#edit-cost").val(data.activity.cost);
+                        $("#edit-description").val(data.activity.description);
+                        $("#edit-id").val(data.activity.id);
+
+                        // 打开模态窗口
+                        $("#editActivityModal").modal("show");
+                    }
+                })
+            });
+
+
+            // 修改一个市场活动, 一般修改操作和添加操作有很大的相似度, 可以使用CV大法
+            $("#updateBtn").click(function () {
+                $.ajax({
+                    url: "workbench/activity/update.do",
+                    data: {
+                        "owner": $.trim($("#edit-marketActivityOwner").val()),
+                        "id": $.trim($("#edit-id").val()),
+                        "name": $.trim($("#edit-marketActivityName").val()),
+                        "startDate": $.trim($("#edit-startDate").val()),
+                        "endDate": $.trim($("#edit-endDate").val()),
+                        "cost": $.trim($("#edit-cost").val()),
+                        "description": $.trim($("#edit-description").val())
+                    },
+                    type: "post",
+                    success: function (data) {
+                        if ("true" === data) {
+                            // 关闭模态窗口
+                            $("#editActivityModal").modal("hide");
+                            window.location.reload();
+                        } else {
+                            alert("修改市场活动失败");
+                        }
+                    }
+                })
+            });
+
+
             // 添加备注操作
             $("#remarkSaveBtn").click(function () {
                 $.ajax({
-                    url : "workbench/activity/remarkSave.do",
-                    data : {
-                        "noteContent" : $.trim($("#remark").val()),
-                        "activityId" : "${activity.id}"
+                    url: "workbench/activity/remarkSave.do",
+                    data: {
+                        "noteContent": $.trim($("#remark").val()),
+                        "activityId": "${activity.id}"
                     },
-                    type : "post",
-                    dataType : "json",
-                    success : function (data) {
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
                         if (data.flag === true) {
                             $("#remark").val("");
                             let html = "";
@@ -120,14 +202,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             $("#updateRemarkBtn").click(function () {
                 let id = $("#remarkId").val();
                 $.ajax({
-                    url : "workbench/activity/updateRemark.do",
-                    data : {
-                        "id" : id,
-                        "noteContent" : $.trim($("#noteContent").val())
+                    url: "workbench/activity/updateRemark.do",
+                    data: {
+                        "id": id,
+                        "noteContent": $.trim($("#noteContent").val())
                     },
-                    type : "post",
-                    dataType : "json",
-                    success : function (data) {
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
                         if (data.flag === true) {
                             $("#e" + id).html(data.activityRemark.noteContent);
                             $("#s" + id).html(data.activityRemark.editTime + ' 由' + data.activityRemark.editBy);
@@ -173,10 +255,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 $(this).children("span").css("color", "#E6E6E6");
             });
 
-            $("#remarkBody").on("mouseover",".remarkDiv",function(){
+            $("#remarkBody").on("mouseover", ".remarkDiv", function () {
                 $(this).children("div").children("div").show();
             })
-            $("#remarkBody").on("mouseout",".remarkDiv",function(){
+            $("#remarkBody").on("mouseout", ".remarkDiv", function () {
                 $(this).children("div").children("div").hide();
             })
 
@@ -204,7 +286,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             <div class="modal-body">
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
-                        <label for="edit-describe" class="col-sm-2 control-label">内容</label>
+                        <label for="edit-description" class="col-sm-2 control-label">内容</label>
                         <div class="col-sm-10" style="width: 81%;">
                             <textarea class="form-control" rows="3" id="noteContent"></textarea>
                         </div>
@@ -232,46 +314,44 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             <div class="modal-body">
 
                 <form class="form-horizontal" role="form">
-
+                    <input type="hidden" id="edit-id"/>
                     <div class="form-group">
                         <label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-marketActivityOwner">
-                                <option>zhangsan</option>
-                                <option>lisi</option>
-                                <option>wangwu</option>
+                                <%--     通过AJAX获得    --%>
                             </select>
                         </div>
                         <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                            <input type="text" class="form-control" id="edit-marketActivityName">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
+                        <label for="edit-startDate" class="col-sm-2 control-label">开始日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+                            <input type="text" class="form-control" id="edit-startDate">
                         </div>
-                        <label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
+                        <label for="edit-endDate" class="col-sm-2 control-label">结束日期</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+                            <input type="text" class="form-control" id="edit-endDate">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-cost" class="col-sm-2 control-label">成本</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-cost" value="5,000">
+                            <input type="text" class="form-control" id="edit-cost">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-describe" class="col-sm-2 control-label">描述</label>
+                        <label for="edit-description" class="col-sm-2 control-label">描述</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+                            <textarea class="form-control" rows="3" id="edit-description"></textarea>
                         </div>
                     </div>
 
@@ -280,7 +360,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                <button type="button" class="btn btn-primary" id="updateBtn">更新</button>
             </div>
         </div>
     </div>
@@ -298,10 +378,11 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
         <h3>市场活动-${activity.name} <small>${activity.startDate} ~ ${activity.endDate}</small></h3>
     </div>
     <div style="position: relative; height: 50px; width: 250px;  top: -72px; left: 700px;">
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span
+        <button type="button" class="btn btn-default" id="editBtn"><span
                 class="glyphicon glyphicon-edit"></span> 编辑
         </button>
-        <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+        <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除
+        </button>
     </div>
 </div>
 
@@ -331,13 +412,15 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 30px;">
         <div style="width: 300px; color: gray;">创建者</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${activity.createBy}&nbsp;&nbsp;</b><small
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;">
+            <b>${activity.createBy}&nbsp;&nbsp;</b><small
                 style="font-size: 10px; color: gray;">${activity.createTime}</small></div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 40px;">
         <div style="width: 300px; color: gray;">修改者</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${activity.editBy}&nbsp;&nbsp;</b><small
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;">
+            <b>${activity.editBy}&nbsp;&nbsp;</b><small
                 style="font-size: 10px; color: gray;">${activity.editTime}</small></div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
@@ -358,39 +441,39 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
         <h4>备注</h4>
     </div>
 
-<%--    <!-- 备注1 -->--%>
-<%--    <div class="remarkDiv" style="height: 60px;">--%>
-<%--        <img title="zhangsan" src="static/crm/image/user-thumbnail.png" style="width: 30px; height:30px;">--%>
-<%--        <div style="position: relative; top: -40px; left: 40px;">--%>
-<%--            <h5>哎呦！</h5>--%>
-<%--            <font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;">--%>
-<%--            2017-01-22 10:10:10 由zhangsan</small>--%>
-<%--            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">--%>
-<%--                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"--%>
-<%--                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
-<%--                &nbsp;&nbsp;&nbsp;&nbsp;--%>
-<%--                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"--%>
-<%--                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--    </div>--%>
+    <%--    <!-- 备注1 -->--%>
+    <%--    <div class="remarkDiv" style="height: 60px;">--%>
+    <%--        <img title="zhangsan" src="static/crm/image/user-thumbnail.png" style="width: 30px; height:30px;">--%>
+    <%--        <div style="position: relative; top: -40px; left: 40px;">--%>
+    <%--            <h5>哎呦！</h5>--%>
+    <%--            <font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;">--%>
+    <%--            2017-01-22 10:10:10 由zhangsan</small>--%>
+    <%--            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">--%>
+    <%--                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"--%>
+    <%--                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
+    <%--                &nbsp;&nbsp;&nbsp;&nbsp;--%>
+    <%--                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"--%>
+    <%--                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
+    <%--            </div>--%>
+    <%--        </div>--%>
+    <%--    </div>--%>
 
-<%--    <!-- 备注2 -->--%>
-<%--    <div class="remarkDiv" style="height: 60px;">--%>
-<%--        <img title="zhangsan" src="static/crm/image/user-thumbnail.png" style="width: 30px; height:30px;">--%>
-<%--        <div style="position: relative; top: -40px; left: 40px;">--%>
-<%--            <h5>呵呵！</h5>--%>
-<%--            <font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;">--%>
-<%--            2017-01-22 10:20:10 由zhangsan</small>--%>
-<%--            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">--%>
-<%--                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"--%>
-<%--                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
-<%--                &nbsp;&nbsp;&nbsp;&nbsp;--%>
-<%--                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"--%>
-<%--                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--    </div>--%>
+    <%--    <!-- 备注2 -->--%>
+    <%--    <div class="remarkDiv" style="height: 60px;">--%>
+    <%--        <img title="zhangsan" src="static/crm/image/user-thumbnail.png" style="width: 30px; height:30px;">--%>
+    <%--        <div style="position: relative; top: -40px; left: 40px;">--%>
+    <%--            <h5>呵呵！</h5>--%>
+    <%--            <font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;">--%>
+    <%--            2017-01-22 10:20:10 由zhangsan</small>--%>
+    <%--            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">--%>
+    <%--                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"--%>
+    <%--                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
+    <%--                &nbsp;&nbsp;&nbsp;&nbsp;--%>
+    <%--                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"--%>
+    <%--                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>--%>
+    <%--            </div>--%>
+    <%--        </div>--%>
+    <%--    </div>--%>
 
     <div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
         <form role="form" style="position: relative;top: 10px; left: 10px;">
