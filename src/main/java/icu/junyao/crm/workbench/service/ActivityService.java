@@ -90,4 +90,19 @@ public interface ActivityService {
      * @return 返回的map大小为2 包括修改结果标记 和 修改后的备注
      */
     Map<String, Object> activityUpdateRemark(HttpServletRequest request, String id, String noteContent);
+
+    /**
+     * 根据线索的id查询相关联的市场活动  为线索详情页的市场活动列表提供
+     * @param clueId 线索ID
+     * @return 返回市场活动的集合
+     */
+    List<Activity> getActivityListByClueId(String clueId);
+
+    /**
+     * 根据线索的id以及关联市场活动模态窗口中的搜索条件查出所有符合条件的市场活动
+     * @param clueId 线索id
+     * @param activityName 查询条件
+     * @return 返回所有满足条件的市场活动的集合
+     */
+    List<Activity> getActivityListByNameAndNotRelation(String clueId, String activityName);
 }

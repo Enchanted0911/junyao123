@@ -114,4 +114,14 @@ public class ActivityServiceImpl implements ActivityService {
         map.put("activityRemark", activityRemark);
         return map;
     }
+
+    @Override
+    public List<Activity> getActivityListByClueId(String clueId) {
+        return activityDao.getActivityListByClueId(clueId);
+    }
+
+    @Override
+    public List<Activity> getActivityListByNameAndNotRelation(String clueId, String activityName) {
+        return activityDao.getActivityListByNameAndNotRelation(clueId, activityName);
+    }
 }

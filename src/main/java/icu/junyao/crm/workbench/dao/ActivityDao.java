@@ -2,6 +2,7 @@ package icu.junyao.crm.workbench.dao;
 
 import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.workbench.domain.Activity;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -64,4 +65,19 @@ public interface ActivityDao {
      * @return 被查询的市场活动
      */
     Activity activityDetail(String id);
+
+    /**
+     * 根据线索的id 返回所有与该线索关联的市场活动
+     * @param clueId 线索id
+     * @return 所有符合条件的市场活动的集合
+     */
+    List<Activity> getActivityListByClueId(String clueId);
+
+    /**
+     * 根据线索id以及查询条件查询所有符合条件的市场活动 ， 注意应当去除那些已经关联过的市场活动
+     * @param clueId 线索id
+     * @param activityName 查询条件
+     * @return  返回所有满足条件的市场活动的集合
+     */
+    List<Activity> getActivityListByNameAndNotRelation(@Param("clueId") String clueId, @Param("activityName") String activityName);
 }
