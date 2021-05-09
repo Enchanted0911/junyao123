@@ -4,7 +4,20 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="icu.junyao.crm.workbench.dao.CustomerRemarkDao">
-	
+	<insert id="save">
+        insert into tbl_customer_remark (id,
+                                         noteContent,
+                                         createTime,
+                                         createBy,
+                                         editFlag,
+                                         customerId)
+        values (#{id},
+                #{noteContent},
+                #{createTime},
+                #{createBy},
+                #{editFlag},
+                #{customerId})
+    </insert>
   	
 </mapper>
 

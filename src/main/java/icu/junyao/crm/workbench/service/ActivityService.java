@@ -105,4 +105,11 @@ public interface ActivityService {
      * @return 返回所有满足条件的市场活动的集合
      */
     List<Activity> getActivityListByNameAndNotRelation(String clueId, String activityName);
+
+    /**
+     * 根据市场活动的名称模糊查询所有符合条件的市场活动
+     * @param activityName 市场活动名称
+     * @return 返回所有满足条件的市场活动
+     */
+    List<Activity> getActivityListByName(String activityName);
 }

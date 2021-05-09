@@ -88,25 +88,31 @@
 
             // 保存一条新建的线索
             $("#saveBtn").click(function () {
+                if ($.trim($("#create-fullname").val()) === "" || $.trim($("#create-appellation").val()) === "" || $.trim($("#create-state").val()) === ""
+                    || $.trim($("#create-clueOwner").val()) === "" || $.trim($("#create-company").val()) === "" || $.trim($("#create-phone").val()) === ""
+                || $.trim($("#create-mphone").val()) === "" || $.trim($("#create-source").val()) === "") {
+                    alert("请填写完整必要的信息!!!");
+                    return false;
+                }
                 $.ajax({
                     url: "workbench/clue/save.do",
                     type: "post",
-                    data : {
-                        "fullname" : $.trim($("#create-fullname").val()),
-                        "appellation" : $.trim($("#create-appellation").val()),
-                        "owner" : $.trim($("#create-clueOwner").val()),
-                        "company" : $.trim($("#create-company").val()),
-                        "job" : $.trim($("#create-job").val()),
-                        "email" : $.trim($("#create-email").val()),
-                        "phone" : $.trim($("#create-phone").val()),
-                        "website" : $.trim($("#create-website").val()),
-                        "mphone" : $.trim($("#create-mphone").val()),
-                        "state" : $.trim($("#create-state").val()),
-                        "source" : $.trim($("#create-source").val()),
-                        "description" :  $.trim($("#create-description").val()),
-                        "contactSummary" : $.trim($("#create-contactSummary").val()),
-                        "nextContactTime" : $.trim($("#create-nextContactTime").val()),
-                        "address" : $.trim($("#create-address").val())
+                    data: {
+                        "fullname": $.trim($("#create-fullname").val()),
+                        "appellation": $.trim($("#create-appellation").val()),
+                        "owner": $.trim($("#create-clueOwner").val()),
+                        "company": $.trim($("#create-company").val()),
+                        "job": $.trim($("#create-job").val()),
+                        "email": $.trim($("#create-email").val()),
+                        "phone": $.trim($("#create-phone").val()),
+                        "website": $.trim($("#create-website").val()),
+                        "mphone": $.trim($("#create-mphone").val()),
+                        "state": $.trim($("#create-state").val()),
+                        "source": $.trim($("#create-source").val()),
+                        "description": $.trim($("#create-description").val()),
+                        "contactSummary": $.trim($("#create-contactSummary").val()),
+                        "nextContactTime": $.trim($("#create-nextContactTime").val()),
+                        "address": $.trim($("#create-address").val())
                     },
                     success: function (data) {
                         if ("true" === data) {
@@ -121,7 +127,98 @@
                 })
             })
 
+            // 打开修改线索的模态窗口
+            $("#editBtn").click(function () {
+                let $checkbox01 = $("input[name = checkbox01]:checked");
+                if ($checkbox01.length === 0) {
+                    alert("请选择要修改的记录 !");
+                } else if ($checkbox01.length > 1) {
+                    alert("每次只能修改一条记录, 请选择要修改的那条 !");
+                } else {
+                    let id = $checkbox01.val();
+                    $.ajax({
+                        url: "workbench/clue/getUserListAndClue.do",
+                        type: "get",
+                        data: {
+                            "id" : id
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            // 处理所有者下拉框
+                            let html = "<option></option>";
+                            $.each(data.uList, function (i, n) {
+                                html += "<option value='" + n.id + "'>" + n.name + "</option>";
+                            })
+                            $("#edit-clueOwner").html(html);
+                            $("#edit-clueOwner").val("${user.id}");
+
+                            // 处理单条Clue
+                            $("#edit-company").val(data.clue.company);
+                            $("#edit-appellation").val(data.clue.appellation);
+                            $("#edit-state").val(data.clue.state);
+                            $("#edit-source").val(data.clue.source);
+                            $("#edit-fullname").val(data.clue.fullname);
+                            $("#edit-phone").val(data.clue.phone);
+                            $("#edit-mphone").val(data.clue.mphone);
+                            $("#edit-description").val(data.clue.description);
+                            $("#edit-website").val(data.clue.website);
+                            $("#edit-job").val(data.clue.job);
+                            $("#edit-email").val(data.clue.email);
+                            $("#edit-contactSummary").val(data.clue.contactSummary);
+                            $("#edit-nextContactTime").val(data.clue.nextContactTime);
+                            $("#edit-address").val(data.clue.address);
+                            $("#edit-clueId").val(data.clue.id);
+
+                            // 打开模态窗口
+                            $("#editClueModal").modal("show");
+                        }
+                    })
+                }
+            });
+
+            // 修改一个线索, 一般修改操作和添加操作有很大的相似度, 可以使用CV大法
+            $("#updateBtn").click(function () {
+                if ($.trim($("#edit-fullname").val()) === "" || $.trim($("#edit-appellation").val()) === "" || $.trim($("#edit-state").val()) === ""
+                    || $.trim($("#edit-clueOwner").val()) === "" || $.trim($("#edit-company").val()) === "" || $.trim($("#edit-phone").val()) === ""
+                    || $.trim($("#edit-mphone").val()) === "" || $.trim($("#edit-source").val()) === "") {
+                    alert("请填写完整必要的信息!!!");
+                    return false;
+                }
+                $.ajax({
+                    url: "workbench/clue/update.do",
+                    data: {
+                        "id" : $.trim($("#edit-clueId").val()),
+                        "fullname": $.trim($("#edit-fullname").val()),
+                        "appellation": $.trim($("#edit-appellation").val()),
+                        "owner": $.trim($("#edit-clueOwner").val()),
+                        "company": $.trim($("#edit-company").val()),
+                        "job": $.trim($("#edit-job").val()),
+                        "email": $.trim($("#edit-email").val()),
+                        "phone": $.trim($("#edit-phone").val()),
+                        "website": $.trim($("#edit-website").val()),
+                        "mphone": $.trim($("#edit-mphone").val()),
+                        "state": $.trim($("#edit-state").val()),
+                        "source": $.trim($("#edit-source").val()),
+                        "description": $.trim($("#edit-description").val()),
+                        "contactSummary": $.trim($("#edit-contactSummary").val()),
+                        "nextContactTime": $.trim($("#edit-nextContactTime").val()),
+                        "address": $.trim($("#edit-address").val())
+                    },
+                    type: "post",
+                    success: function (data) {
+                        if ("true" === data) {
+                            // 第一个参数表示 操作后停留在当前页 第二个参数表示 操作后维持已经设置好的每页展现的记录数
+                            pageList($("#cluePage").bs_pagination('getOption', 'currentPage'), $("#cluePage").bs_pagination('getOption', 'rowsPerPage'));
+                            // 关闭模态窗口
+                            $("#editClueModal").modal("hide");
+                        } else {
+                            alert("修改线索失败");
+                        }
+                    }
+                })
+            });
         });
+
         function pageList(pageNo, pageSize) {
             // 每次刷新列表, 去除复选框的选中
             $("#selectAll").prop("checked", false);
@@ -229,7 +326,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="create-appellation" class="col-sm-2 control-label">称呼</label>
+                        <label for="create-appellation" class="col-sm-2 control-label">称呼<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-appellation">
                                 <option></option>
@@ -257,7 +355,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="create-phone" class="col-sm-2 control-label">公司座机</label>
+                        <label for="create-phone" class="col-sm-2 control-label">公司座机<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create-phone">
                         </div>
@@ -268,11 +367,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="create-mphone" class="col-sm-2 control-label">手机</label>
+                        <label for="create-mphone" class="col-sm-2 control-label">手机<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="create-mphone">
                         </div>
-                        <label for="create-state" class="col-sm-2 control-label">线索状态</label>
+                        <label for="create-state" class="col-sm-2 control-label">线索状态<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-state">
                                 <option></option>
@@ -284,7 +385,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="create-source" class="col-sm-2 control-label">线索来源</label>
+                        <label for="create-source" class="col-sm-2 control-label">线索来源<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="create-source">
                                 <option></option>
@@ -353,82 +455,73 @@
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" role="form">
-
+                    <input type="hidden" id="edit-clueId">
                     <div class="form-group">
                         <label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-clueOwner">
-                                <option>zhangsan</option>
-                                <option>lisi</option>
-                                <option>wangwu</option>
+                                <%--     由AJAX获得     --%>
                             </select>
                         </div>
                         <label for="edit-company" class="col-sm-2 control-label">公司<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-company" value="动力节点">
+                            <input type="text" class="form-control" id="edit-company">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-call" class="col-sm-2 control-label">称呼</label>
+                        <label for="edit-appellation" class="col-sm-2 control-label">称呼</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="edit-call">
+                            <select class="form-control" id="edit-appellation">
                                 <option></option>
-                                <option selected>先生</option>
-                                <option>夫人</option>
-                                <option>女士</option>
-                                <option>博士</option>
-                                <option>教授</option>
+                                <c:forEach items="${appellationList}" var="a">
+                                    <option value="${a.value}">${a.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
                         <label for="edit-fullname" class="col-sm-2 control-label">姓名<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-fullname" value="李四">
+                            <input type="text" class="form-control" id="edit-fullname">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-job" class="col-sm-2 control-label">职位</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-job" value="CTO">
+                            <input type="text" class="form-control" id="edit-job">
                         </div>
                         <label for="edit-email" class="col-sm-2 control-label">邮箱</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-email" value="lisi@bjpowernode.com">
+                            <input type="text" class="form-control" id="edit-email">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-phone" class="col-sm-2 control-label">公司座机</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-phone" value="010-84846003">
+                            <input type="text" class="form-control" id="edit-phone">
                         </div>
                         <label for="edit-website" class="col-sm-2 control-label">公司网站</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-website"
-                                   value="http://www.bjpowernode.com">
+                            <input type="text" class="form-control" id="edit-website">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-mphone" class="col-sm-2 control-label">手机</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-mphone" value="12345678901">
+                            <input type="text" class="form-control" id="edit-mphone">
                         </div>
-                        <label for="edit-status" class="col-sm-2 control-label">线索状态</label>
+                        <label for="edit-state" class="col-sm-2 control-label">线索状态</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="edit-status">
+                            <select class="form-control" id="edit-state">
                                 <option></option>
-                                <option>试图联系</option>
-                                <option>将来联系</option>
-                                <option selected>已联系</option>
-                                <option>虚假线索</option>
-                                <option>丢失线索</option>
-                                <option>未联系</option>
-                                <option>需要条件</option>
+                                <c:forEach items="${clueStateList}" var="c">
+                                    <option value="${c.value}">${c.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -438,28 +531,17 @@
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-source">
                                 <option></option>
-                                <option selected>广告</option>
-                                <option>推销电话</option>
-                                <option>员工介绍</option>
-                                <option>外部介绍</option>
-                                <option>在线商场</option>
-                                <option>合作伙伴</option>
-                                <option>公开媒介</option>
-                                <option>销售邮件</option>
-                                <option>合作伙伴研讨会</option>
-                                <option>内部研讨会</option>
-                                <option>交易会</option>
-                                <option>web下载</option>
-                                <option>web调研</option>
-                                <option>聊天</option>
+                                <c:forEach items="${sourceList}" var="s">
+                                    <option value="${s.value}">${s.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-describe" class="col-sm-2 control-label">描述</label>
+                        <label for="edit-description" class="col-sm-2 control-label">描述</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <textarea class="form-control" rows="3" id="edit-describe">这是一条线索的描述信息</textarea>
+                            <textarea class="form-control" rows="3" id="edit-description"></textarea>
                         </div>
                     </div>
 
@@ -469,7 +551,7 @@
                         <div class="form-group">
                             <label for="edit-contactSummary" class="col-sm-2 control-label">联系纪要</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="edit-contactSummary">这个线索即将被转换</textarea>
+                                <textarea class="form-control" rows="3" id="edit-contactSummary"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
@@ -486,7 +568,7 @@
                         <div class="form-group">
                             <label for="edit-address" class="col-sm-2 control-label">详细地址</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="1" id="edit-address">北京大兴区大族企业湾</textarea>
+                                <textarea class="form-control" rows="1" id="edit-address"></textarea>
                             </div>
                         </div>
                     </div>
@@ -495,7 +577,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                <button type="button" class="btn btn-primary" id="updateBtn">更新</button>
             </div>
         </div>
     </div>
@@ -589,10 +671,12 @@
                 <button type="button" class="btn btn-primary" id="addBtn"><span
                         class="glyphicon glyphicon-plus"></span> 创建
                 </button>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span
+                <button type="button" class="btn btn-default" id="editBtn"><span
                         class="glyphicon glyphicon-pencil"></span> 修改
                 </button>
-                <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+                <button type="button" class="btn btn-danger" id="deleteBtn"><span
+                        class="glyphicon glyphicon-minus"></span> 删除
+                </button>
             </div>
 
 
@@ -612,66 +696,66 @@
                 </tr>
                 </thead>
                 <tbody id="clueBody">
-<%--                <tr>--%>
-<%--                    <td><input type="checkbox"/></td>--%>
-<%--                    <td><a style="text-decoration: none; cursor: pointer;"--%>
-<%--                           onclick="window.location.href='settings/clueDetail.do';">李四先生</a></td>--%>
-<%--                    <td>动力节点</td>--%>
-<%--                    <td>010-84846003</td>--%>
-<%--                    <td>12345678901</td>--%>
-<%--                    <td>广告</td>--%>
-<%--                    <td>zhangsan</td>--%>
-<%--                    <td>已联系</td>--%>
-<%--                </tr>--%>
-<%--                <tr class="active">--%>
-<%--                    <td><input type="checkbox"/></td>--%>
-<%--                    <td><a style="text-decoration: none; cursor: pointer;"--%>
-<%--                           onclick="window.location.href='settings/clueDetail.do';">李四先生</a></td>--%>
-<%--                    <td>动力节点</td>--%>
-<%--                    <td>010-84846003</td>--%>
-<%--                    <td>12345678901</td>--%>
-<%--                    <td>广告</td>--%>
-<%--                    <td>zhangsan</td>--%>
-<%--                    <td>已联系</td>--%>
-<%--                </tr>--%>
+                <%--                <tr>--%>
+                <%--                    <td><input type="checkbox"/></td>--%>
+                <%--                    <td><a style="text-decoration: none; cursor: pointer;"--%>
+                <%--                           onclick="window.location.href='settings/clueDetail.do';">李四先生</a></td>--%>
+                <%--                    <td>动力节点</td>--%>
+                <%--                    <td>010-84846003</td>--%>
+                <%--                    <td>12345678901</td>--%>
+                <%--                    <td>广告</td>--%>
+                <%--                    <td>zhangsan</td>--%>
+                <%--                    <td>已联系</td>--%>
+                <%--                </tr>--%>
+                <%--                <tr class="active">--%>
+                <%--                    <td><input type="checkbox"/></td>--%>
+                <%--                    <td><a style="text-decoration: none; cursor: pointer;"--%>
+                <%--                           onclick="window.location.href='settings/clueDetail.do';">李四先生</a></td>--%>
+                <%--                    <td>动力节点</td>--%>
+                <%--                    <td>010-84846003</td>--%>
+                <%--                    <td>12345678901</td>--%>
+                <%--                    <td>广告</td>--%>
+                <%--                    <td>zhangsan</td>--%>
+                <%--                    <td>已联系</td>--%>
+                <%--                </tr>--%>
                 </tbody>
             </table>
         </div>
 
         <div style="height: 50px; position: relative;top: 60px;">
             <div id="cluePage"></div>
-<%--            <div>--%>
-<%--                <button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>--%>
-<%--            </div>--%>
-<%--            <div class="btn-group" style="position: relative;top: -34px; left: 110px;">--%>
-<%--                <button type="button" class="btn btn-default" style="cursor: default;">显示</button>--%>
-<%--                <div class="btn-group">--%>
-<%--                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">--%>
-<%--                        10--%>
-<%--                        <span class="caret"></span>--%>
-<%--                    </button>--%>
-<%--                    <ul class="dropdown-menu" role="menu">--%>
-<%--                        <li><a href="#">20</a></li>--%>
-<%--                        <li><a href="#">30</a></li>--%>
-<%--                    </ul>--%>
-<%--                </div>--%>
-<%--                <button type="button" class="btn btn-default" style="cursor: default;">条/页</button>--%>
-<%--            </div>--%>
-<%--            <div style="position: relative;top: -88px; left: 285px;">--%>
-<%--                <nav>--%>
-<%--                    <ul class="pagination">--%>
-<%--                        <li class="disabled"><a href="#">首页</a></li>--%>
-<%--                        <li class="disabled"><a href="#">上一页</a></li>--%>
-<%--                        <li class="active"><a href="#">1</a></li>--%>
-<%--                        <li><a href="#">2</a></li>--%>
-<%--                        <li><a href="#">3</a></li>--%>
-<%--                        <li><a href="#">4</a></li>--%>
-<%--                        <li><a href="#">5</a></li>--%>
-<%--                        <li><a href="#">下一页</a></li>--%>
-<%--                        <li class="disabled"><a href="#">末页</a></li>--%>
-<%--                    </ul>--%>
-<%--                </nav>--%>
-<%--            </div>--%>
+            <%--            <div>--%>
+            <%--                <button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>--%>
+            <%--            </div>--%>
+            <%--            <div class="btn-group" style="position: relative;top: -34px; left: 110px;">--%>
+            <%--                <button type="button" class="btn btn-default" style="cursor: default;">显示</button>--%>
+            <%--                <div class="btn-group">--%>
+            <%--                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">--%>
+            <%--                        10--%>
+            <%--                        <span class="caret"></span>--%>
+            <%--                    </button>--%>
+            <%--                    <ul class="dropdown-menu" role="menu">--%>
+            <%--                        <li><a href="#">20</a></li>--%>
+            <%--                        <li><a href="#">30</a></li>--%>
+            <%--                    </ul>--%>
+            <%--                </div>--%>
+            <%--                <button type="button" class="btn btn-default" style="cursor: default;">条/页</button>--%>
+            <%--            </div>--%>
+            <%--            <div style="position: relative;top: -88px; left: 285px;">--%>
+            <%--                <nav>--%>
+            <%--                    <ul class="pagination">--%>
+            <%--                        <li class="disabled"><a href="#">首页</a></li>--%>
+            <%--                        <li class="disabled"><a href="#">上一页</a></li>--%>
+            <%--                        <li class="active"><a href="#">1</a></li>--%>
+            <%--                        <li><a href="#">2</a></li>--%>
+            <%--                        <li><a href="#">3</a></li>--%>
+            <%--                        <li><a href="#">4</a></li>--%>
+            <%--                        <li><a href="#">5</a></li>--%>
+            <%--                        <li><a href="#">下一页</a></li>--%>
+            <%--                        <li class="disabled"><a href="#">末页</a></li>--%>
+            <%--                    </ul>--%>
+            <%--                </nav>--%>
+            <%--            </div>--%>
         </div>
     </div>
 </div>

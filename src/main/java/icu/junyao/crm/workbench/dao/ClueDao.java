@@ -39,9 +39,30 @@ public interface ClueDao {
     int cluePageListTotalNum(Map<String, Object> map);
 
     /**
-     * 根据id查询出单条线索
+     * 根据id查询出单条线索 这里owner是user的name
      * @param id 被查询的线索的id
      * @return 返回查询出的线索
      */
     Clue clueDetail(String id);
+
+    /**
+     * 获取单条clue的所有信息 注意这个里面的owner就是一串id
+     * @param clueId 线索id
+     * @return 返回查询出的线索
+     */
+    Clue getClueById(String clueId);
+
+    /**
+     * 删除一条线索
+     * @param clueId 线索id
+     * @return 修改成功的记录数
+     */
+    int delete(String clueId);
+
+    /**
+     * 更新一条线索记录
+     * @param clue 需要更新信息的线索
+     * @return 返回修改成功的记录条数
+     */
+    int clueUpdate(Clue clue);
 }

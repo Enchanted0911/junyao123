@@ -80,4 +80,11 @@ public interface ActivityDao {
      * @return  返回所有满足条件的市场活动的集合
      */
     List<Activity> getActivityListByNameAndNotRelation(@Param("clueId") String clueId, @Param("activityName") String activityName);
+
+    /**
+     * 根据市场活动名称模糊查询多个市场活动
+     * @param activityName 市场活动模糊名
+     * @return 返回所有符合的市场活动组成的集合
+     */
+    List<Activity> getActivityListByName(String activityName);
 }

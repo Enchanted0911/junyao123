@@ -398,7 +398,7 @@
         <h3>${clue.fullname}${clue.appellation} <small>${clue.company}</small></h3>
     </div>
     <div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-        <button type="button" class="btn btn-default" onclick="window.location.href='settings/clueConvert.do';"><span
+        <button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/goConvert.do?fullname=${clue.fullname}&appellation=${clue.appellation}&company=${clue.company}&owner=${clue.owner}&id=${clue.id}';"><span
                 class="glyphicon glyphicon-retweet"></span> 转换
         </button>
         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span
@@ -423,13 +423,13 @@
         <div style="width: 300px; color: gray;">公司</div>
         <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.company}</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">职位</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${clue.job}</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${clue.job}&nbsp;&nbsp;</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 20px;">
         <div style="width: 300px; color: gray;">邮箱</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.email}</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.email}&nbsp;&nbsp;</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">公司座机</div>
         <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${clue.phone}</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
@@ -437,7 +437,7 @@
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 30px;">
         <div style="width: 300px; color: gray;">公司网站</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.website}</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.website}&nbsp;&nbsp;</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">手机</div>
         <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${clue.mphone}</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
@@ -467,7 +467,7 @@
         <div style="width: 300px; color: gray;">描述</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                ${clue.description}
+                ${clue.description}&nbsp;&nbsp;
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
@@ -476,21 +476,21 @@
         <div style="width: 300px; color: gray;">联系纪要</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                ${clue.contactSummary}
+                ${clue.contactSummary}&nbsp;&nbsp;
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 90px;">
         <div style="width: 300px; color: gray;">下次联系时间</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.nextContactTime}</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${clue.nextContactTime}&nbsp;&nbsp;</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px; "></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 100px;">
         <div style="width: 300px; color: gray;">详细地址</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                ${clue.address}
+                ${clue.address}&nbsp;&nbsp;
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>

@@ -124,4 +124,9 @@ public class ActivityServiceImpl implements ActivityService {
     public List<Activity> getActivityListByNameAndNotRelation(String clueId, String activityName) {
         return activityDao.getActivityListByNameAndNotRelation(clueId, activityName);
     }
+
+    @Override
+    public List<Activity> getActivityListByName(String activityName) {
+        return activityDao.getActivityListByName(activityName);
+    }
 }

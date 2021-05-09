@@ -4,6 +4,7 @@ import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.domain.Activity;
 import icu.junyao.crm.workbench.domain.Clue;
+import icu.junyao.crm.workbench.domain.Tran;
 
 import java.util.List;
 import java.util.Map;
@@ -53,4 +54,27 @@ public interface ClueService {
      * @return 返回"true" 表示成功
      */
     String bind(String clueId, String[] activityIds);
+
+    /**
+     * 线索转换
+     * @param clueId 要转换的线索的id
+     * @param tran 可能有新添加的交易
+     * @param createBy 创建人
+     * @return true时会返回到线索的index界面
+     */
+    boolean convert(String clueId, Tran tran, String createBy);
+
+    /**
+     * 通过线索id查询出该线索, 以及把用户表返回给修改线索的模态窗口
+     * @param id 线索id
+     * @return 返回的map包含一个线索和一个用户列表
+     */
+    Map<String, Object> getUserListAndClue(String id);
+
+    /**
+     * 提交对线索的修改操作
+     * @param clue 被修改的线索
+     * @return 返回"true"表示成功
+     */
+    String clueUpdate(Clue clue);
 }

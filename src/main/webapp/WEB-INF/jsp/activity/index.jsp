@@ -61,6 +61,12 @@
             });
             // 创建一个市场活动
             $("#saveBtn").click(function () {
+                if ($.trim($("#create-marketActivityOwner").val()) === "" || $.trim($("#create-marketActivityName").val()) === ""
+                    || $.trim($("#create-startDate").val()) === "" || $.trim($("#create-endDate").val()) === ""
+                    || $.trim($("#create-cost").val()) === "" || $.trim($("#create-description").val()) === "") {
+                    alert("请把信息填写完整 !!!");
+                    return false;
+                }
                 $.ajax({
                     url: "workbench/activity/save.do",
                     data: {
@@ -155,29 +161,35 @@
             });
             // 修改一个市场活动, 一般修改操作和添加操作有很大的相似度, 可以使用CV大法
             $("#updateBtn").click(function () {
-                $.ajax({
-                    url: "workbench/activity/update.do",
-                    data: {
-                        "owner": $.trim($("#edit-marketActivityOwner").val()),
-                        "id": $.trim($("#edit-id").val()),
-                        "name": $.trim($("#edit-marketActivityName").val()),
-                        "startDate": $.trim($("#edit-startDate").val()),
-                        "endDate": $.trim($("#edit-endDate").val()),
-                        "cost": $.trim($("#edit-cost").val()),
-                        "description": $.trim($("#edit-description").val())
-                    },
-                    type: "post",
-                    success: function (data) {
-                        if ("true" === data) {
-                            // 第一个参数表示 操作后停留在当前页 第二个参数表示 操作后维持已经设置好的每页展现的记录数
-                            pageList($("#activityPage").bs_pagination('getOption', 'currentPage'), $("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
-                            // 关闭模态窗口
-                            $("#editActivityModal").modal("hide");
-                        } else {
-                            alert("修改市场活动失败");
+                if ($.trim($("#edit-marketActivityOwner").val()) === "" || $.trim($("#edit-marketActivityName").val()) === ""
+                    || $.trim($("#edit-startDate").val()) === "" || $.trim($("#edit-endDate").val()) === ""
+                    || $.trim($("#edit-cost").val()) === "" || $.trim($("#edit-description").val()) === "") {
+                    alert("请把信息填写完整 !!!");
+                    return false;
+                }
+                    $.ajax({
+                        url: "workbench/activity/update.do",
+                        data: {
+                            "owner": $.trim($("#edit-marketActivityOwner").val()),
+                            "id": $.trim($("#edit-id").val()),
+                            "name": $.trim($("#edit-marketActivityName").val()),
+                            "startDate": $.trim($("#edit-startDate").val()),
+                            "endDate": $.trim($("#edit-endDate").val()),
+                            "cost": $.trim($("#edit-cost").val()),
+                            "description": $.trim($("#edit-description").val())
+                        },
+                        type: "post",
+                        success: function (data) {
+                            if ("true" === data) {
+                                // 第一个参数表示 操作后停留在当前页 第二个参数表示 操作后维持已经设置好的每页展现的记录数
+                                pageList($("#activityPage").bs_pagination('getOption', 'currentPage'), $("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+                                // 关闭模态窗口
+                                $("#editActivityModal").modal("hide");
+                            } else {
+                                alert("修改市场活动失败");
+                            }
                         }
-                    }
-                })
+                    })
             });
 
             // 复选框操作

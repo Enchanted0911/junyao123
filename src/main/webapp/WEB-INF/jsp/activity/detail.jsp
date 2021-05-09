@@ -140,6 +140,12 @@
 
             // 修改一个市场活动, 一般修改操作和添加操作有很大的相似度, 可以使用CV大法
             $("#updateBtn").click(function () {
+                if ($.trim($("#edit-marketActivityOwner").val()) === "" || $.trim($("#edit-marketActivityName").val()) === ""
+                    || $.trim($("#edit-startDate").val()) === "" || $.trim($("#edit-endDate").val()) === ""
+                    || $.trim($("#edit-cost").val()) === "" || $.trim($("#edit-description").val()) === "") {
+                    alert("请把信息填写完整 !!!");
+                    return false;
+                }
                 $.ajax({
                     url: "workbench/activity/update.do",
                     data: {
@@ -167,6 +173,10 @@
 
             // 添加备注操作
             $("#remarkSaveBtn").click(function () {
+                if ($.trim($("#remark").val()) === "") {
+                    alert("请填写备注信息, 不能为空!")
+                    return false;
+                }
                 $.ajax({
                     url: "workbench/activity/remarkSave.do",
                     data: {
@@ -182,7 +192,7 @@
                             html += '<div class="remarkDiv" id="' + data.activityRemark.id + '" style="height: 60px;">';
                             html += '<img title="' + data.activityRemark.createBy + '" src="static/crm/image/user-thumbnail.png" style="width: 30px; height:30px;">';
                             html += '<div style="position: relative; top: -40px; left: 40px;">';
-                            html += '<h5>' + data.activityRemark.noteContent + '</h5>';
+                            html += '<h5 id="e' + data.activityRemark.id + '">' + data.activityRemark.noteContent + '</h5>';
                             html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;" id="s' + data.activityRemark.id + '">' + data.activityRemark.createTime + ' 由' + data.activityRemark.createBy + '</small>';
                             html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
                             html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\'' + data.activityRemark.id + '\')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -201,6 +211,13 @@
             // 修改备注操作
             $("#updateRemarkBtn").click(function () {
                 let id = $("#remarkId").val();
+                if ($.trim($("#noteContent").val()) === "") {
+                    if (confirm("备注为空, 将被删除, 确定删除所选的记录吗 ? ")) {
+                        removeRemark(id);
+                    }
+                    $("#editRemarkModal").modal("hide");
+                    return false;
+                }
                 $.ajax({
                     url: "workbench/activity/updateRemark.do",
                     data: {
