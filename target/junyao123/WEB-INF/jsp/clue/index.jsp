@@ -217,6 +217,34 @@
                     }
                 })
             });
+
+            // 删除操作
+            $("#deleteBtn").click(function () {
+                let $checkbox01 = $("input[name = checkbox01]:checked");
+                if ($checkbox01.length === 0) {
+                    alert("请选择要删除的记录");
+                } else {
+                    if (confirm("确定删除所选的记录吗 ? ")) {
+                        let param = "";
+                        for (let i = 0; i < $checkbox01.length; i++) {
+                            param += i === $checkbox01.length - 1 ? "id=" + $($checkbox01[i]).val() : "id=" + $($checkbox01[i]).val() + "&";
+                        }
+                        $.ajax({
+                            url: "workbench/clue/delete.do",
+                            data: param,
+                            type: "post",
+                            success: function (data) {
+                                if (data === "true") {
+                                    // 有待完善
+                                    pageList(1, $("#cluePage").bs_pagination('getOption', 'rowsPerPage'));
+                                } else {
+                                    alert("sorry!删除线索失败 !");
+                                }
+                            }
+                        })
+                    }
+                }
+            });
         });
 
         function pageList(pageNo, pageSize) {

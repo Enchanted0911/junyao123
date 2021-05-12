@@ -65,4 +65,11 @@ public interface ClueDao {
      * @return 返回修改成功的记录条数
      */
     int clueUpdate(Clue clue);
+
+    /**
+     * 删除复选框选中的线索
+     * @param ids 线索id组成的集合
+     * @return 返回修改成功的记录
+     */
+    int clueDelete(String[] ids);
 }

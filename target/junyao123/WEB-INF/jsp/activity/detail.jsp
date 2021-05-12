@@ -85,7 +85,7 @@
         $(function () {
             // 删除操作
             $("#deleteBtn").click(function () {
-                if (confirm("确定删除所选的记录吗 ? ")) {
+                if (confirm("确定删除该条记录吗 ? ")) {
                     let param = "id=${activity.id}";
                     $.ajax({
                         url: "workbench/activity/delete.do",
@@ -140,10 +140,8 @@
 
             // 修改一个市场活动, 一般修改操作和添加操作有很大的相似度, 可以使用CV大法
             $("#updateBtn").click(function () {
-                if ($.trim($("#edit-marketActivityOwner").val()) === "" || $.trim($("#edit-marketActivityName").val()) === ""
-                    || $.trim($("#edit-startDate").val()) === "" || $.trim($("#edit-endDate").val()) === ""
-                    || $.trim($("#edit-cost").val()) === "" || $.trim($("#edit-description").val()) === "") {
-                    alert("请把信息填写完整 !!!");
+                if ($.trim($("#edit-marketActivityOwner").val()) === "" || $.trim($("#edit-marketActivityName").val()) === "") {
+                    alert("请把必要信息填写完整 !!!");
                     return false;
                 }
                 $.ajax({
@@ -416,15 +414,15 @@
 
     <div style="position: relative; left: 40px; height: 30px; top: 10px;">
         <div style="width: 300px; color: gray;">开始日期</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.startDate}</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.startDate}&nbsp;&nbsp;</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">结束日期</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${activity.endDate}</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${activity.endDate}&nbsp;&nbsp;</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 20px;">
         <div style="width: 300px; color: gray;">成本</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.cost}</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.cost}&nbsp;&nbsp;</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 30px;">
@@ -438,14 +436,14 @@
         <div style="width: 300px; color: gray;">修改者</div>
         <div style="width: 500px;position: relative; left: 200px; top: -20px;">
             <b>${activity.editBy}&nbsp;&nbsp;</b><small
-                style="font-size: 10px; color: gray;">${activity.editTime}</small></div>
+                style="font-size: 10px; color: gray;">${activity.editTime}&nbsp;&nbsp;</small></div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 50px;">
         <div style="width: 300px; color: gray;">描述</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                ${activity.description}
+                ${activity.description}&nbsp;&nbsp;
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>

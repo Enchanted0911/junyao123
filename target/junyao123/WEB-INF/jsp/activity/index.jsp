@@ -61,10 +61,8 @@
             });
             // 创建一个市场活动
             $("#saveBtn").click(function () {
-                if ($.trim($("#create-marketActivityOwner").val()) === "" || $.trim($("#create-marketActivityName").val()) === ""
-                    || $.trim($("#create-startDate").val()) === "" || $.trim($("#create-endDate").val()) === ""
-                    || $.trim($("#create-cost").val()) === "" || $.trim($("#create-description").val()) === "") {
-                    alert("请把信息填写完整 !!!");
+                if ($.trim($("#create-marketActivityOwner").val()) === "" || $.trim($("#create-marketActivityName").val()) === "") {
+                    alert("请把必要信息填写完整 !!!");
                     return false;
                 }
                 $.ajax({
@@ -161,9 +159,7 @@
             });
             // 修改一个市场活动, 一般修改操作和添加操作有很大的相似度, 可以使用CV大法
             $("#updateBtn").click(function () {
-                if ($.trim($("#edit-marketActivityOwner").val()) === "" || $.trim($("#edit-marketActivityName").val()) === ""
-                    || $.trim($("#edit-startDate").val()) === "" || $.trim($("#edit-endDate").val()) === ""
-                    || $.trim($("#edit-cost").val()) === "" || $.trim($("#edit-description").val()) === "") {
+                if ($.trim($("#edit-marketActivityOwner").val()) === "" || $.trim($("#edit-marketActivityName").val()) === "") {
                     alert("请把信息填写完整 !!!");
                     return false;
                 }

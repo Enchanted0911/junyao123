@@ -4,8 +4,10 @@ import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.domain.Activity;
 import icu.junyao.crm.workbench.domain.Clue;
+import icu.junyao.crm.workbench.domain.ClueRemark;
 import icu.junyao.crm.workbench.domain.Tran;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -77,4 +79,41 @@ public interface ClueService {
      * @return 返回"true"表示成功
      */
     String clueUpdate(Clue clue);
+
+    /**
+     * 根据勾选的线索删除线索 可能包含多个线索
+     * @param ids 线索的id组成的数组
+     * @return 返回true表示成功
+     */
+    boolean clueDelete(String[] ids);
+
+    /**
+     * 通过线索id获取所有线索备注信息展示在线索详情页
+     * @param clueId 线索id
+     * @return 线索备注集合
+     */
+    List<ClueRemark> getClueRemarksByClueId(String clueId);
+
+    /**
+     * 保存一条线索备注, 并返回该条备注给备注展示页局部刷新
+     * @param clueRemark 线索备注
+     * @return 包含一个flag标记是否保存成功, 以及该条备注
+     */
+    Map<String, Object> clueRemarkSave(ClueRemark clueRemark);
+
+    /**
+     * 更新一条线索备注信息
+     * @param request 请求
+     * @param id 备注id
+     * @param noteContent 备注内容
+     * @return map集合包括一个flag标记表示更新是否成功, 以及更新后的线索备注
+     */
+    Map<String, Object> clueUpdateRemark(HttpServletRequest request, String id, String noteContent);
+
+    /**
+     * 删除一条线索备注
+     * @param id 备注id
+     * @return 返回"true" 表示成功
+     */
+    String clueRemoveRemark(String id);
 }

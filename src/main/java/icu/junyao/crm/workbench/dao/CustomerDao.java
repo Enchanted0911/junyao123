@@ -2,6 +2,8 @@ package icu.junyao.crm.workbench.dao;
 
 import icu.junyao.crm.workbench.domain.Customer;
 
+import java.util.List;
+
 /**
  * @author wu
  */
@@ -20,4 +22,11 @@ public interface CustomerDao {
      * @return 返回修改成功的条数
      */
     int save(Customer customer);
+
+    /**
+     * 根据name模糊查询所有符合条件的公司名称
+     * @param name 模糊名称
+     * @return 返回所有符合条件的客户名称
+     */
+    List<String> getCustomerNameLike(String name);
 }

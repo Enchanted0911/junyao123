@@ -35,6 +35,9 @@
 
 
     </insert>
+    <select id="getCustomerNameLike" resultType="string">
+        select name from tbl_customer where name like '%' #{name} '%'
+    </select>
 </mapper>
 
 

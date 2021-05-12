@@ -161,6 +161,13 @@
 
         where id = #{id}
     </update>
+    <delete id="clueDelete">
+        delete from tbl_clue
+        where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
 
 

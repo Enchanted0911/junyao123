@@ -10,6 +10,7 @@ import icu.junyao.crm.workbench.service.ClueService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,5 +216,52 @@ public class ClueServiceImpl implements ClueService {
     public String clueUpdate(Clue clue) {
         int num = clueDao.clueUpdate(clue);
         return num == 1 ? "true" : "false";
+    }
+
+    @Override
+    public boolean clueDelete(String[] ids) {
+        boolean flag = true;
+        int count01 = clueRemarkDao.getCountByClueIds(ids);
+        int count02 = clueRemarkDao.deleteByClueIds(ids);
+        if (count01 != count02) {
+            flag = false;
+        }
+        int count03 = clueDao.clueDelete(ids);
+        if (count03 != ids.length) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    @Override
+    public List<ClueRemark> getClueRemarksByClueId(String clueId) {
+        return clueRemarkDao.getClueRemarksByClueId(clueId);
+    }
+
+    @Override
+    public Map<String, Object> clueRemarkSave(ClueRemark clueRemark) {
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("flag", clueRemarkDao.remarkSave(clueRemark) == 1);
+        map.put("clueRemark", clueRemark);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> clueUpdateRemark(HttpServletRequest request, String id, String noteContent) {
+        Map<String, Object> map = new HashMap<>(8);
+        ClueRemark clueRemark = new ClueRemark();
+        clueRemark.setId(id);
+        clueRemark.setNoteContent(noteContent);
+        clueRemark.setEditTime(DateTimeUtil.getSysTime());
+        clueRemark.setEditBy(((User)request.getSession().getAttribute("user")).getName());
+        clueRemark.setEditFlag("1");
+        map.put("flag", clueRemarkDao.remarkUpdate(clueRemark) == 1);
+        map.put("clueRemark", clueRemark);
+        return map;
+    }
+
+    @Override
+    public String clueRemoveRemark(String id) {
+        return clueRemarkDao.removeRemarkById(id) == 1 ? "true" : "false";
     }
 }

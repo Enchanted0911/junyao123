@@ -4,9 +4,7 @@ import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.utils.DateTimeUtil;
 import icu.junyao.crm.utils.UUIDUtil;
 import icu.junyao.crm.vo.PaginationVO;
-import icu.junyao.crm.workbench.domain.Activity;
-import icu.junyao.crm.workbench.domain.Clue;
-import icu.junyao.crm.workbench.domain.Tran;
+import icu.junyao.crm.workbench.domain.*;
 import icu.junyao.crm.workbench.service.ActivityService;
 import icu.junyao.crm.workbench.service.ClueService;
 import org.springframework.stereotype.Controller;
@@ -145,5 +143,44 @@ public class ClueController {
         clue.setEditTime(DateTimeUtil.getSysTime());
         clue.setEditBy(((User)request.getSession().getAttribute("user")).getName());
         return clueService.clueUpdate(clue);
+    }
+
+    @ResponseBody
+    @RequestMapping("/delete.do")
+    public String doClueDelete(HttpServletRequest request) {
+        String[] ids = request.getParameterValues("id");
+        boolean flag = clueService.clueDelete(ids);
+        return flag ? "true" : "false";
+    }
+
+    @ResponseBody
+    @RequestMapping("/getRemarkListByClueId.do")
+    public List<ClueRemark> doGetRemarkListByClueId(String clueId) {
+        return clueService.getClueRemarksByClueId(clueId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/remarkSave.do")
+    public Map<String, Object> doClueRemarkSave(HttpServletRequest request, String noteContent, String clueId) {
+        ClueRemark clueRemark = new ClueRemark();
+        clueRemark.setClueId(clueId);
+        clueRemark.setNoteContent(noteContent);
+        clueRemark.setCreateBy(((User)request.getSession().getAttribute("user")).getName());
+        clueRemark.setCreateTime(DateTimeUtil.getSysTime());
+        clueRemark.setId(UUIDUtil.getUUID());
+        clueRemark.setEditFlag("0");
+        return clueService.clueRemarkSave(clueRemark);
+    }
+
+    @ResponseBody
+    @RequestMapping("/updateRemark.do")
+    public Map<String, Object> doClueUpdateRemark(HttpServletRequest request, String id, String noteContent) {
+        return clueService.clueUpdateRemark(request, id, noteContent);
+    }
+
+    @ResponseBody
+    @RequestMapping("/removeRemark.do")
+    public String doClueRemoveRemark(String id) {
+        return clueService.clueRemoveRemark(id);
     }
 }
