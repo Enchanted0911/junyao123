@@ -371,7 +371,7 @@
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <select class="form-control" id="edit-marketActivityOwner">
-                                <%--                                这里的数据通过AJAX获得--%>
+                                <%--    这里的数据通过AJAX获得   --%>
                             </select>
                         </div>
                         <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span

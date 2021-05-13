@@ -380,7 +380,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			</div>
 			<label for="activityName_01" class="col-sm-2 control-label">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" id="openSearchModelBtn"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="activityName_01">
+				<input type="text" class="form-control" id="activityName_01" placeholder="点击搜索图标搜索" disabled>
 				<input type="hidden" id="activityId" name="activityId">
 			</div>
 		</div>
@@ -388,7 +388,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		<div class="form-group">
 			<label for="contactsName_01" class="col-sm-2 control-label">联系人名称&nbsp;&nbsp;<a href="javascript:void(0);" id="openSearchContactsModelBtn"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="contactsName_01">
+				<input type="text" class="form-control" id="contactsName_01" placeholder="点击搜索图标搜索" disabled>
 				<input type="hidden" id="contactId" name="contactsId">
 			</div>
 		</div>

@@ -18,7 +18,20 @@
                 #{editFlag},
                 #{contactsId})
     </insert>
-  	
+  	<select id="getCountByContactsIds" resultType="int">
+        select count(*) from tbl_contacts_remark
+        where contactsId in
+        <foreach collection="array" item="contactsId" open="(" close=")" separator=",">
+            #{contactsId}
+        </foreach>
+    </select>
+    <delete id="deleteByContactsIds">
+        delete from tbl_contacts_remark
+        where contactsId in
+        <foreach collection="array" item="contactsId" open="(" close=")" separator=",">
+            #{contactsId}
+        </foreach>
+    </delete>
 </mapper>
 
 

@@ -4,6 +4,54 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="icu.junyao.crm.workbench.dao.ContactsDao">
+    <select id="contactsPageList" resultType="Contacts">
+        select c.id, c.fullname, u.name owner, c.source, cus.name customerId, c.birth
+        from tbl_contacts c
+        join tbl_user u on c.owner = u.id
+        join tbl_customer cus on c.customerId = cus.id
+        <where>
+            <if test="fullname != null and fullname != ''">
+                c.fullname like '%' #{fullname} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="source != null and source != ''">
+                and c.source = #{source}
+            </if>
+            <if test="birth != null and birth != ''">
+                and c.birth = #{birth}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                and cus.name like '%' #{customerName} '%'
+            </if>
+        </where>
+        order by c.createTime desc
+        limit #{skipCount}, #{pageSize}
+    </select>
+    <select id="contactsPageListTotalNum" resultType="int">
+        select count(*)
+        from tbl_contacts c
+        join tbl_user u on c.owner = u.id
+        join tbl_customer cus on c.customerId = cus.id
+        <where>
+            <if test="fullname != null and fullname != ''">
+                c.fullname like '%' #{fullname} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="source != null and source != ''">
+                and c.source = #{source}
+            </if>
+            <if test="birth != null and birth != ''">
+                and c.birth = #{birth}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                and cus.name like '%' #{customerName} '%'
+            </if>
+        </where>
+    </select>
     <insert id="save">
         insert into tbl_contacts(id,
                                  owner,
@@ -40,8 +88,92 @@
     </insert>
 
     <select id="getContactsListByName" resultType="Contacts">
-        select * from tbl_contacts where fullname like '%' #{fullname} '%'
+        select *
+        from tbl_contacts
+        where fullname like '%' #{fullname} '%'
     </select>
+    <select id="contactsGetUserList" resultType="User">
+        select *
+        from tbl_user;
+    </select>
+    <select id="getContactsById" resultType="Contacts">
+        select con.id,
+               con.owner,
+               con.source,
+               cus.name customerId,
+               con.fullname,
+               con.appellation,
+               con.email,
+               con.mphone,
+               con.job,
+               con.birth,
+               con.createBy,
+               con.createTime,
+               con.editBy,
+               con.editTime,
+               con.description,
+               con.contactSummary,
+               con.nextContactTime,
+               con.address
+        from tbl_contacts con
+                 join tbl_customer cus on con.customerId = cus.id
+        where con.id = #{id}
+    </select>
+    <select id="contactsDetail" resultType="Contacts">
+        select con.id,
+               u.name   owner,
+               con.source,
+               cus.name customerId,
+               con.fullname,
+               con.appellation,
+               con.email,
+               con.mphone,
+               con.job,
+               con.birth,
+               con.createBy,
+               con.createTime,
+               con.editBy,
+               con.editTime,
+               con.description,
+               con.contactSummary,
+               con.nextContactTime,
+               con.address
+        from tbl_contacts con
+                 join tbl_customer cus on con.customerId = cus.id
+                 join tbl_user u on u.id = con.owner
+        where con.id = #{id}
+    </select>
+    <update id="update">
+        update tbl_contacts
+        set owner=#{owner},
+            source=#{source},
+            customerId=#{customerId},
+            fullname=#{fullname},
+            appellation=#{appellation},
+            email=#{email},
+            mphone=#{mphone},
+            job=#{job},
+            birth=#{birth},
+            editBy=#{editBy},
+            editTime=#{editTime},
+            description=#{description},
+            contactSummary=#{contactSummary},
+            nextContactTime=#{nextContactTime},
+            address=#{address}
+        where id = #{id}
+    </update>
+    <select id="getCreateById" resultType="string">
+        select createBy
+        from tbl_contacts
+        where id = #{id}
+    </select>
+    <delete id="contactsDelete">
+        delete from tbl_contacts
+        where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>
 
 
