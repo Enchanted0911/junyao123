@@ -2,6 +2,8 @@ package icu.junyao.crm.workbench.dao;
 
 import icu.junyao.crm.workbench.domain.TranHistory;
 
+import java.util.List;
+
 /**
  * @author wu
  */
@@ -13,4 +15,11 @@ public interface TranHistoryDao {
      * @return 修改成功的条数
      */
     int save(TranHistory tranHistory);
+
+    /**
+     * 根据交易id返回所有该交易的交易历史
+     * @param tranId 交易id
+     * @return 交易历史列表
+     */
+    List<TranHistory> getHistoryListByTranId(String tranId);
 }

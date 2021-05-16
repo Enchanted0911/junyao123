@@ -1,6 +1,7 @@
 package icu.junyao.crm.workbench.service.impl;
 
 import icu.junyao.crm.utils.UUIDUtil;
+import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.dao.CustomerDao;
 import icu.junyao.crm.workbench.dao.TranDao;
 import icu.junyao.crm.workbench.dao.TranHistoryDao;
@@ -11,6 +12,9 @@ import icu.junyao.crm.workbench.service.TranService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wu
@@ -57,5 +61,46 @@ public class TranServiceImpl implements TranService {
             flag = false;
         }
         return flag;
+    }
+
+    @Override
+    public PaginationVO<Tran> tranPageList(Map<String, Object> map) {
+        List<Tran> contactsList = tranDao.tranPageList(map);
+        int total = tranDao.tranPageListTotalNum(map);
+        PaginationVO<Tran> vo = new PaginationVO<>();
+        vo.setTotal(total);
+        vo.setDataList(contactsList);
+        return vo;
+    }
+
+    @Override
+    public Tran tranDetail(String id) {
+        return tranDao.tranDetail(id);
+    }
+
+    @Override
+    public List<TranHistory> getHistoryListByTranId(String tranId) {
+        return tranHistoryDao.getHistoryListByTranId(tranId);
+    }
+
+    @Override
+    public boolean doChangeStage(Tran tran) {
+        TranHistory tranHistory = new TranHistory();
+        tranHistory.setId(UUIDUtil.getUUID());
+        tranHistory.setCreateBy(tran.getEditBy());
+        tranHistory.setCreateTime(tran.getEditTime());
+        tranHistory.setMoney(tran.getMoney());
+        tranHistory.setExpectedDate(tran.getExpectedDate());
+        tranHistory.setTranId(tran.getId());
+        tranHistory.setStage(tran.getStage());
+        return tranDao.changeStage(tran) == 1 && tranHistoryDao.save(tranHistory) == 1;
+    }
+
+    @Override
+    public Map<String, Object> getCharts() {
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("total", tranDao.getTotal());
+        map.put("dataList", tranDao.getCharts());
+        return map;
     }
 }

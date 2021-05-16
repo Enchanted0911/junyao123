@@ -87,4 +87,19 @@ public interface ActivityDao {
      * @return 返回所有符合的市场活动组成的集合
      */
     List<Activity> getActivityListByName(String activityName);
+
+    /**
+     * 根据联系人的id 返回所有与该联系人关联的市场活动
+     * @param contactsId 联系人id
+     * @return 所有符合条件的市场活动的集合
+     */
+    List<Activity> getActivityListByContactsId(String contactsId);
+
+    /**
+     * 根据联系人id以及查询条件查询所有符合条件的市场活动 ， 注意应当去除那些已经关联过的市场活动
+     * @param contactsId 联系人id
+     * @param activityName 查询条件
+     * @return  返回所有满足条件的市场活动的集合
+     */
+    List<Activity> getActivityListByNameAndNotRelationForContacts(@Param("contactsId") String contactsId, @Param("activityName") String activityName);
 }

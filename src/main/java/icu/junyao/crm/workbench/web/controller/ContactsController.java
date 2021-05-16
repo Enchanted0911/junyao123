@@ -6,7 +6,10 @@ import icu.junyao.crm.utils.DateTimeUtil;
 import icu.junyao.crm.utils.UUIDUtil;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.domain.Activity;
+import icu.junyao.crm.workbench.domain.ActivityRemark;
 import icu.junyao.crm.workbench.domain.Contacts;
+import icu.junyao.crm.workbench.domain.ContactsRemark;
+import icu.junyao.crm.workbench.service.ActivityService;
 import icu.junyao.crm.workbench.service.ContactsService;
 import icu.junyao.crm.workbench.service.CustomerService;
 import org.springframework.stereotype.Controller;
@@ -30,6 +33,8 @@ public class ContactsController {
     private ContactsService contactsService;
     @Resource
     private CustomerService customerService;
+    @Resource
+    private ActivityService activityService;
 
     @ResponseBody
     @RequestMapping("/pageList.do")
@@ -91,11 +96,74 @@ public class ContactsController {
 
     @ResponseBody
     @RequestMapping("/detail.do")
-    public ModelAndView doActivityDetail(String id) {
+    public ModelAndView doContactsDetail(String id) {
         ModelAndView modelAndView = new ModelAndView();
         Contacts contacts = contactsService.contactsDetail(id);
         modelAndView.addObject("contacts", contacts);
         modelAndView.setViewName("contacts/detail");
         return modelAndView;
+    }
+
+    @ResponseBody
+    @RequestMapping("/getRemarkListByContactsId.do")
+    public List<ContactsRemark> doGetRemarkListByContactsId(String contactsId) {
+        return contactsService.getRemarkListByContactsId(contactsId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/remarkSave.do")
+    public Map<String, Object> doContactsRemarkSave(HttpServletRequest request, String noteContent, String contactsId) {
+        ContactsRemark contactsRemark = new ContactsRemark();
+        contactsRemark.setContactsId(contactsId);
+        contactsRemark.setNoteContent(noteContent);
+        contactsRemark.setCreateBy(((User)request.getSession().getAttribute("user")).getName());
+        contactsRemark.setCreateTime(DateTimeUtil.getSysTime());
+        contactsRemark.setId(UUIDUtil.getUUID());
+        contactsRemark.setEditFlag("0");
+        return contactsService.contactsRemarkSave(contactsRemark);
+    }
+
+    @ResponseBody
+    @RequestMapping("/updateRemark.do")
+    public Map<String, Object> doContactsUpdateRemark(HttpServletRequest request, String id, String noteContent) {
+        ContactsRemark contactsRemark = new ContactsRemark();
+        contactsRemark.setId(id);
+        contactsRemark.setNoteContent(noteContent);
+        contactsRemark.setEditTime(DateTimeUtil.getSysTime());
+        contactsRemark.setEditBy(((User)request.getSession().getAttribute("user")).getName());
+        contactsRemark.setEditFlag("1");
+        return contactsService.contactsUpdateRemark(contactsRemark);
+    }
+
+    @ResponseBody
+    @RequestMapping("/removeRemark.do")
+    public String doContactsRemoveRemark(String id) {
+        return contactsService.contactsRemoveRemark(id);
+    }
+
+    @ResponseBody
+    @RequestMapping("/getActivityListByContactsId.do")
+    public List<Activity> doGetActivityListByClueId(String contactsId) {
+        return activityService.getActivityListByContactsId(contactsId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/getActivityListByNameAndNotRelation.do")
+    public List<Activity> doGetActivityListByNameAndNotRelation(String contactsId, String activityName) {
+        return activityService.getActivityListByNameAndNotRelationForContacts(contactsId, activityName);
+    }
+
+    @ResponseBody
+    @RequestMapping("/bind.do")
+    public String doBind(HttpServletRequest request) {
+        String contactsId = request.getParameter("contactsId");
+        String[] activityIds = request.getParameterValues("activityId");
+        return contactsService.bind(contactsId, activityIds);
+    }
+
+    @ResponseBody
+    @RequestMapping("/unbind.do")
+    public String doUnbind(String id) {
+        return contactsService.unbind(id);
     }
 }

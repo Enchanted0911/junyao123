@@ -257,7 +257,9 @@
                                 showActivityList();
 
                                 // 清除搜索框中的信息, 复选框中的选中去掉, 清空addActivityRelation中的内容
-
+                                $("#addActivityRelation").html("");
+                                $("#activityName").val("");
+                                $("#bindSelectAll").prop("checked", false);
 
                                 // 关闭模态窗口
                                 $("#bundModal").modal("hide");
@@ -267,6 +269,26 @@
                         }
                     })
                 }
+            })
+
+            // 解除一条线索-市场活动关联
+            $("#unbindBtn").click(function () {
+                let id = $("#unbindId").val();
+                $.ajax({
+                    url: "workbench/clue/unbind.do",
+                    data: {
+                        "id": id
+                    },
+                    type: "post",
+                    success: function (data) {
+                        if ("true" === data) {
+                            showActivityList();
+                            $("#unbindActivityModal").modal("hide");
+                        } else {
+                            alert("解除关联失败");
+                        }
+                    }
+                })
             })
 
             // 关联市场活动窗口复选框操作
@@ -382,23 +404,6 @@
                 }
             });
 
-            $(".remarkDiv").mouseover(function () {
-                $(this).children("div").children("div").show();
-            });
-
-            $(".remarkDiv").mouseout(function () {
-                $(this).children("div").children("div").hide();
-            });
-
-            $(".myHref").mouseover(function () {
-                $(this).children("span").css("color", "red");
-            });
-
-            $(".myHref").mouseout(function () {
-                $(this).children("span").css("color", "#E6E6E6");
-            });
-
-
             // 展示关联的市场活动列表
             showActivityList();
         });
@@ -419,7 +424,7 @@
                         html += '<td>' + n.startDate + '</td>'
                         html += '<td>' + n.endDate + '</td>'
                         html += '<td>' + n.owner + '</td>'
-                        html += '<td><a href="javascript:void(0);" onclick="unbind(\'' + n.id + '\')" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>'
+                        html += '<td><a href="javascript:void(0);" onclick="setUnbindId(\'' + n.id + '\')" data-toggle="modal" data-target="#unbindActivityModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>'
                         html += '</tr>'
                     })
                     $("#activityBody").html(html);
@@ -427,21 +432,9 @@
             })
         }
 
-        function unbind(id) {
-            $.ajax({
-                url: "workbench/clue/unbind.do",
-                data: {
-                    "id": id
-                },
-                type: "post",
-                success: function (data) {
-                    if ("true" === data) {
-                        showActivityList();
-                    } else {
-                        alert("解除关联失败");
-                    }
-                }
-            })
+        // 打开解除市场活动关联时把要解除的关联关系id赋值给隐藏域
+        function setUnbindId(id) {
+            $("#unbindId").val(id);
         }
     </script>
 
@@ -529,6 +522,28 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-primary" id="bindBtn">关联</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 解除线索和市场活动关联的模态窗口 -->
+<div class="modal fade" id="unbindActivityModal" role="dialog">
+    <input type="hidden" id="unbindId">
+    <div class="modal-dialog" role="document" style="width: 30%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">解除关联</h4>
+            </div>
+            <div class="modal-body">
+                <p>您确定要解除该关联关系吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="unbindBtn">解除</button>
             </div>
         </div>
     </div>

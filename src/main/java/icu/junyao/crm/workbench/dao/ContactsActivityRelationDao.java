@@ -13,4 +13,11 @@ public interface ContactsActivityRelationDao {
      * @return 返回修改成功的记录条数
      */
     int save(ContactsActivityRelation contactsActivityRelation);
+
+    /**
+     * 根据关联关系表的id删除单条记录
+     * @param id 关联关系表id
+     * @return 返回修改成功的数据
+     */
+    int unbind(String id);
 }

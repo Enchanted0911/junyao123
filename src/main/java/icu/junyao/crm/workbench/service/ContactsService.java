@@ -3,6 +3,7 @@ package icu.junyao.crm.workbench.service;
 import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.domain.Contacts;
+import icu.junyao.crm.workbench.domain.ContactsRemark;
 
 import java.util.List;
 import java.util.Map;
@@ -67,4 +68,47 @@ public interface ContactsService {
      * @return 联系人
      */
     Contacts contactsDetail(String id);
+
+    /**
+     * 通过联系人的ID取得该联系人的所有备注信息
+     * @param contactsId 该联系人的ID
+     * @return 返回所有备注信息的集合
+     */
+    List<ContactsRemark> getRemarkListByContactsId(String contactsId);
+
+    /**
+     * 添加一条联系人备注
+     * @param contactsRemark 要添加的联系人
+     * @return 返回的map包括结果标记 和 被添加的联系人
+     */
+    Map<String, Object> contactsRemarkSave(ContactsRemark contactsRemark);
+
+    /**
+     * 更新一条联系人备注信息
+     * @param contactsRemark 联系人备注
+     * @return 返回map包括修改结果编辑 和 修改后的联系人备注
+     */
+    Map<String, Object> contactsUpdateRemark(ContactsRemark contactsRemark);
+
+    /**
+     * 删除一条联系人备注信息
+     * @param id 联系人备注id
+     * @return 返回"true"表示成功
+     */
+    String contactsRemoveRemark(String id);
+
+    /**
+     * 通过联系人id以及需要绑定的市场活动id给联系人新关联市场活动
+     * @param contactsId 线索id
+     * @param activityIds 市场活动id 可能有多个
+     * @return 返回"true" 表示成功
+     */
+    String bind(String contactsId, String[] activityIds);
+
+    /**
+     * 根据关联关系表的id删除单条关联关系
+     * @param id 关联关系的id
+     * @return 返回"true" 表示成功
+     */
+    String unbind(String id);
 }

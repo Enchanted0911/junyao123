@@ -4,12 +4,11 @@ import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.utils.DateTimeUtil;
 import icu.junyao.crm.utils.UUIDUtil;
 import icu.junyao.crm.vo.PaginationVO;
+import icu.junyao.crm.workbench.dao.ContactsActivityRelationDao;
 import icu.junyao.crm.workbench.dao.ContactsDao;
 import icu.junyao.crm.workbench.dao.ContactsRemarkDao;
 import icu.junyao.crm.workbench.dao.CustomerDao;
-import icu.junyao.crm.workbench.domain.Activity;
-import icu.junyao.crm.workbench.domain.Contacts;
-import icu.junyao.crm.workbench.domain.Customer;
+import icu.junyao.crm.workbench.domain.*;
 import icu.junyao.crm.workbench.service.ContactsService;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +28,8 @@ public class ContactsServiceImpl implements ContactsService {
     private ContactsRemarkDao contactsRemarkDao;
     @Resource
     private CustomerDao customerDao;
+    @Resource
+    private ContactsActivityRelationDao contactsActivityRelationDao;
 
     @Override
     public List<Contacts> getContactsListByName(String contactsName) {
@@ -121,5 +122,51 @@ public class ContactsServiceImpl implements ContactsService {
     @Override
     public Contacts contactsDetail(String id) {
         return contactsDao.contactsDetail(id);
+    }
+
+    @Override
+    public List<ContactsRemark> getRemarkListByContactsId(String contactsId) {
+        return contactsRemarkDao.getRemarkListByContactsId(contactsId);
+    }
+
+    @Override
+    public Map<String, Object> contactsRemarkSave(ContactsRemark contactsRemark) {
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("flag", contactsRemarkDao.remarkSave(contactsRemark) == 1);
+        map.put("contactsRemark", contactsRemark);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> contactsUpdateRemark(ContactsRemark contactsRemark) {
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("flag", contactsRemarkDao.remarkUpdate(contactsRemark) == 1);
+        map.put("contactsRemark", contactsRemark);
+        return map;
+    }
+
+    @Override
+    public String contactsRemoveRemark(String id) {
+        return contactsRemarkDao.removeRemarkById(id) == 1 ? "true" : "false";
+    }
+
+    @Override
+    public String bind(String contactsId, String[] activityIds) {
+        String flag = "true";
+        for (String activityId : activityIds) {
+            ContactsActivityRelation car = new ContactsActivityRelation();
+            car.setId(UUIDUtil.getUUID());
+            car.setContactsId(contactsId);
+            car.setActivityId(activityId);
+            if (contactsActivityRelationDao.save(car) != 1) {
+                flag = "false";
+            }
+        }
+        return flag;
+    }
+
+    @Override
+    public String unbind(String id) {
+        return contactsActivityRelationDao.unbind(id) == 1 ? "true" : "false";
     }
 }

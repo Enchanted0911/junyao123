@@ -119,6 +119,17 @@
                  join tbl_clue_activity_relation car on a.id = car.activityId
         where car.clueId = #{clueId}
     </select>
+    <select id="getActivityListByContactsId" resultType="Activity">
+        select car.id id,
+               a.name,
+               a.startDate,
+               a.endDate,
+               u.name owner
+        from tbl_activity a
+                 join tbl_user u on a.owner = u.id
+                 join tbl_contacts_activity_relation car on a.id = car.activityId
+        where car.contactsId = #{contactsId}
+    </select>
     <select id="getActivityListByNameAndNotRelation" resultType="Activity">
         select a.id, a.name, a.startDate, a.endDate, u.name owner
         from tbl_activity a
@@ -134,5 +145,14 @@
                  join tbl_user u
                       on a.owner = u.id
         where a.name like '%' #{activityName} '%'
+    </select>
+    <select id="getActivityListByNameAndNotRelationForContacts" resultType="Activity">
+        select a.id, a.name, a.startDate, a.endDate, u.name owner
+        from tbl_activity a
+                 join tbl_user u
+                      on a.owner = u.id
+        where a.name like '%' #{activityName} '%' and a.id not in(
+        select activityId from tbl_contacts_activity_relation where contactsId=#{contactsId}
+            )
     </select>
 </mapper>

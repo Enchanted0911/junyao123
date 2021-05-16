@@ -155,4 +155,22 @@ public class UserController {
     public String visitDetail() {
         return "visit/detail";
     }
+
+
+    @RequestMapping("/chartActivity.do")
+    public String chartActivity() {
+        return "chart/activity/index";
+    }
+    @RequestMapping("/chartTransaction.do")
+    public String chartTransaction() {
+        return "chart/transaction/index";
+    }
+    @RequestMapping("/chartClue.do")
+    public String chartClue() {
+        return "chart/clue/index";
+    }
+    @RequestMapping("/chartCustomerAndContacts.do")
+    public String chartCustomerAndContacts() {
+        return "chart/customerAndContacts/index";
+    }
 }

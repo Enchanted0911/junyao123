@@ -112,4 +112,19 @@ public interface ActivityService {
      * @return 返回所有满足条件的市场活动
      */
     List<Activity> getActivityListByName(String activityName);
+
+    /**
+     * 根据联系人的id查询相关联的市场活动  为联系人详情页的市场活动列表提供
+     * @param contactsId 联系人ID
+     * @return 返回市场活动的集合
+     */
+    List<Activity> getActivityListByContactsId(String contactsId);
+
+    /**
+     * 根据联系人的id以及关联市场活动模态窗口中的搜索条件查出所有符合条件的市场活动
+     * @param contactsId 联系人id
+     * @param activityName 查询条件
+     * @return 返回所有满足条件的市场活动的集合
+     */
+    List<Activity> getActivityListByNameAndNotRelationForContacts(String contactsId, String activityName);
 }
