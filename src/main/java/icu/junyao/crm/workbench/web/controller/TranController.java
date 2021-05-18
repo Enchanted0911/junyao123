@@ -39,10 +39,17 @@ public class TranController {
 
     @ResponseBody
     @RequestMapping("/add.do")
-    public ModelAndView gotoAddPage() {
+    public ModelAndView gotoAddPage(HttpServletRequest request, Boolean flag) {
         ModelAndView modelAndView = new ModelAndView();
         List<User> userList = activityService.activityGetUserList();
         modelAndView.addObject("userList", userList);
+        // flag为是否是联系人业务中的添加交易标记 true表示是
+        modelAndView.addObject("flag", flag);
+        // 如果是联系人业务中需要为特定联系人添加交易 则添加该联系人的id和名称
+        if (flag) {
+            modelAndView.addObject("id", request.getParameter("id"));
+            modelAndView.addObject("fullname", request.getParameter("fullname"));
+        }
         modelAndView.setViewName("transaction/save");
         return modelAndView;
     }
@@ -61,10 +68,14 @@ public class TranController {
 
 
     @RequestMapping("/save.do")
-    public String doSave(HttpServletRequest request, Tran tran, String customerName) {
+    public String doSave(HttpServletRequest request, Tran tran, String customerName, Boolean flag) {
         tran.setId(UUIDUtil.getUUID());
         tran.setCreateTime(DateTimeUtil.getSysTime());
         tran.setCreateBy(((User) request.getSession().getAttribute("user")).getName());
+        // 如果是联系人业务添加交易, 创建成功后返回联系人详情页
+        if (flag && tranService.transactionSave(tran, customerName)) {
+            return "redirect:/workbench/contacts/detail.do?id=" + tran.getContactsId() + "";
+        }
         return tranService.transactionSave(tran, customerName) ? "transaction/index" : null;
     }
 
@@ -102,9 +113,9 @@ public class TranController {
     public List<TranHistory> doGetHistoryListByTranId(HttpServletRequest request, String tranId) {
         List<TranHistory> tranHistoryList = tranService.getHistoryListByTranId(tranId);
         Map<String, String> pMap = (Map<String, String>) request.getSession().getServletContext().getAttribute("pMap");
-        tranHistoryList.forEach(th -> {
-            th.setPossibility(pMap.get(th.getStage()));
-        });
+        tranHistoryList.forEach(th ->
+                th.setPossibility(pMap.get(th.getStage()))
+        );
         return tranHistoryList;
     }
 
@@ -125,5 +136,12 @@ public class TranController {
     @RequestMapping("/getCharts.do")
     public Map<String, Object> doGetCharts() {
         return tranService.getCharts();
+    }
+
+    @ResponseBody
+    @RequestMapping("/delete.do")
+    public String doDelete(HttpServletRequest request) {
+        String[] ids = request.getParameterValues("id");
+        return tranService.delete(ids);
     }
 }

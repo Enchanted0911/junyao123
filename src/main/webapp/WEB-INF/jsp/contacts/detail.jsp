@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     // 只针对当前页面有效， 有必要需要在每个页面加上这段代码
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
@@ -17,8 +18,13 @@
     <link rel="apple-touch-icon" sizes="72x72" href="static/imgs/title/cat.png">
     <link rel="apple-touch-icon" sizes="114x114" href="static/imgs/title/cat.png">
     <link rel="stylesheet" href="static/crm/jquery/bootstrap_3.3.0/css/bootstrap.min.css"/>
+    <link href="static/crm/jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css"
+          rel="stylesheet"/>
     <script src="static/crm/jquery/jquery-1.11.1-min.js"></script>
     <script src="static/crm/jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+    <script src="static/crm/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+    <script src="static/crm/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="static/crm/jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
 
     <script>
 
@@ -52,11 +58,151 @@
         }
 
         $(function () {
+            $(".time").datetimepicker({
+                minView: "month",
+                format: 'yyyy-mm-dd',
+                language: 'zh-CN',
+                autoclose: true,
+                pickerPosition: "bottom-left"
+            });
+
+            // 客户名称自动补全插件
+            $("#edit-customerName").typeahead({
+                source: function (query, process) {
+                    $.get(
+                        "workbench/contacts/getCustomerName.do",
+                        {"name": query},
+                        function (data) {
+                            process(data);
+                        },
+                        "json"
+                    );
+                },
+                delay: 500
+            });
             // 展示备注信息
             showRemarkList();
 
             // 展示关联的市场活动列表
             showActivityList();
+
+            // 展现关联的交易列表
+            showTransactionList();
+
+            // 打开修改的模态窗口
+            $("#editBtn").click(function () {
+                $.ajax({
+                    url: "workbench/contacts/getUserListAndContacts.do",
+                    data: {
+                        "id": "${contacts.id}"
+                    },
+                    type: "get",
+                    dataType: "json",
+                    success: function (data) {
+                        // 处理所有者下拉框
+                        let html = "<option></option>";
+                        $.each(data.uList, function (i, n) {
+                            html += "<option value='" + n.id + "'>" + n.name + "</option>";
+                        })
+                        $("#edit-owner").html(html);
+
+                        // 处理单条Contacts
+                        $("#edit-appellation").val(data.contacts.appellation);
+                        $("#edit-email").val(data.contacts.email);
+                        $("#edit-mphone").val(data.contacts.mphone);
+                        $("#edit-job").val(data.contacts.job);
+                        $("#edit-contactSummary").val(data.contacts.contactSummary);
+                        $("#edit-nextContactTime").val(data.contacts.nextContactTime);
+                        $("#edit-address").val(data.contacts.address);
+                        $("#edit-fullname").val(data.contacts.fullname);
+                        $("#edit-owner").val(data.contacts.owner);
+                        $("#edit-birth").val(data.contacts.birth);
+                        $("#edit-source").val(data.contacts.source);
+                        $("#edit-customerName").val(data.contacts.customerId);
+                        $("#edit-description").val(data.contacts.description);
+
+                        // 打开模态窗口
+                        $("#editContactsModal").modal("show");
+                    }
+                })
+
+            });
+            // 修改一个联系人, 一般修改操作和添加操作有很大的相似度, 可以使用CV大法
+            $("#updateBtn").click(function () {
+                if ($.trim($("#edit-fullname").val()) === "" || $.trim($("#edit-customerName").val()) === ""
+                    || $.trim($("#edit-owner").val()) === "" || $.trim($("#edit-source").val()) === "") {
+                    alert("请把必要信息填写完整 !!!");
+                    return false;
+                }
+                $.ajax({
+                    url: "workbench/contacts/update.do",
+                    data: {
+                        "id": "${contacts.id}",
+                        "appellation": $.trim($("#edit-appellation").val()),
+                        "email": $.trim($("#edit-email").val()),
+                        "mphone": $.trim($("#edit-mphone").val()),
+                        "job": $.trim($("#edit-job").val()),
+                        "contactSummary": $.trim($("#edit-contactSummary").val()),
+                        "nextContactTime": $.trim($("#edit-nextContactTime").val()),
+                        "address": $.trim($("#edit-address").val()),
+                        "fullname": $.trim($("#edit-fullname").val()),
+                        "owner": $.trim($("#edit-owner").val()),
+                        "birth": $.trim($("#edit-birth").val()),
+                        "source": $.trim($("#edit-source").val()),
+                        "customerName": $.trim($("#edit-customerName").val()),
+                        "description": $.trim($("#edit-description").val())
+                    },
+                    type: "post",
+                    success: function (data) {
+                        if ("true" === data) {
+                            window.location.reload();
+                            $("#editContactsModal").modal("hide");
+                        } else {
+                            alert("修改联系人失败");
+                        }
+                    }
+                })
+            });
+
+            // 删除联系人操作
+            $("#deleteBtn").click(function () {
+                if (confirm("确定删除所选的记录吗 ? ")) {
+                    let param = "id=${contacts.id}";
+                    $.ajax({
+                        url: "workbench/contacts/delete.do",
+                        data: param,
+                        type: "post",
+                        success: function (data) {
+                            if (data === "true") {
+                                alert("删除成功, 即将会回到联系人主界面");
+                                window.location.href = "settings/contactsIndex.do";
+                            } else {
+                                alert("sorry!删除联系人失败 !");
+                            }
+                        }
+                    })
+                }
+            });
+
+            // 删除该联系人的一条交易
+            $("#removeBtn").click(function () {
+                let id = $("#removeId").val();
+                let param = "id=" + id;
+                $.ajax({
+                    url: "workbench/transaction/delete.do",
+                    data: param,
+                    type: "post",
+                    success: function (data) {
+                        if ("true" === data) {
+                            showTransactionList();
+                            $("#removeTransactionModal").modal("hide");
+                        } else {
+                            alert("交易删除失败!")
+                            $("#removeTransactionModal").modal("hide");
+                        }
+                    }
+                })
+            })
 
             // 市场活动源的搜索操作
             $("#activityName").keydown(function (event) {
@@ -318,9 +464,41 @@
             })
         }
 
+        // 展示关联的交易列表
+        function showTransactionList() {
+            $.ajax({
+                url: "workbench/contacts/getTransactionListByContactsId.do",
+                data: {
+                    "contactsId": "${contacts.id}"
+                },
+                type: "get",
+                dataType: "json",
+                success: function (data) {
+                    let html = "";
+                    $.each(data, function (i, n) {
+                        html += '<tr>'
+                        html += '<td><a style="text-decoration: none; cursor: pointer;"';
+                        html += 'onclick="window.location.href=\'workbench/transaction/detail.do?id=' + n.id + '\';">' + n.name + '</a></td>';
+                        html += '<td>' + n.money + '</td>'
+                        html += '<td>' + n.stage + '</td>'
+                        html += '<td>' + n.possibility + '</td>'
+                        html += '<td>' + n.expectedDate + '</td>'
+                        html += '<td>' + n.type + '</td>'
+                        html += '<td><a href="javascript:void(0);" onclick="setRemoveId(\'' + n.id + '\')" data-toggle="modal" data-target="#removeTransactionModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>'
+                        html += '</tr>'
+                    })
+                    $("#transactionBody").html(html);
+                }
+            })
+        }
+
         // 打开解除市场活动关联时把要解除的关联关系id赋值给隐藏域
         function setUnbindId(id) {
             $("#unbindId").val(id);
+        }
+
+        function setRemoveId(id) {
+            $("#removeId").val(id);
         }
     </script>
 
@@ -351,6 +529,28 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除该联系人的一条交易 -->
+<div class="modal fade" id="removeTransactionModal" role="dialog">
+    <input type="hidden" id="removeId">
+    <div class="modal-dialog" role="document" style="width: 30%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">删除交易</h4>
+            </div>
+            <div class="modal-body">
+                <p>您确定要删除该交易吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="removeBtn">解除</button>
             </div>
         </div>
     </div>
@@ -450,52 +650,38 @@
                 <form class="form-horizontal" role="form">
 
                     <div class="form-group">
-                        <label for="edit-contactsOwner" class="col-sm-2 control-label">所有者<span
+                        <label for="edit-owner" class="col-sm-2 control-label">所有者<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="edit-contactsOwner">
-                                <option selected>zhangsan</option>
-                                <option>lisi</option>
-                                <option>wangwu</option>
+                            <select class="form-control" id="edit-owner">
+                                <%--   由ajax提供   --%>
                             </select>
                         </div>
-                        <label for="edit-clueSource" class="col-sm-2 control-label">来源</label>
+                        <label for="edit-source" class="col-sm-2 control-label">来源<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="edit-clueSource">
+                            <select class="form-control" id="edit-source">
                                 <option></option>
-                                <option selected>广告</option>
-                                <option>推销电话</option>
-                                <option>员工介绍</option>
-                                <option>外部介绍</option>
-                                <option>在线商场</option>
-                                <option>合作伙伴</option>
-                                <option>公开媒介</option>
-                                <option>销售邮件</option>
-                                <option>合作伙伴研讨会</option>
-                                <option>内部研讨会</option>
-                                <option>交易会</option>
-                                <option>web下载</option>
-                                <option>web调研</option>
-                                <option>聊天</option>
+                                <c:forEach items="${sourceList}" var="s">
+                                    <option value="${s.value}">${s.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-surname" class="col-sm-2 control-label">姓名<span
+                        <label for="edit-fullname" class="col-sm-2 control-label">姓名<span
                                 style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-surname" value="李四">
+                            <input type="text" class="form-control" id="edit-fullname">
                         </div>
-                        <label for="edit-call" class="col-sm-2 control-label">称呼</label>
+                        <label for="edit-appellation" class="col-sm-2 control-label">称呼</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <select class="form-control" id="edit-call">
+                            <select class="form-control" id="edit-appellation">
                                 <option></option>
-                                <option selected>先生</option>
-                                <option>夫人</option>
-                                <option>女士</option>
-                                <option>博士</option>
-                                <option>教授</option>
+                                <c:forEach items="${appellationList}" var="a">
+                                    <option value="${a.value}">${a.text}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -503,37 +689,38 @@
                     <div class="form-group">
                         <label for="edit-job" class="col-sm-2 control-label">职位</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-job" value="CTO">
+                            <input type="text" class="form-control" id="edit-job">
                         </div>
                         <label for="edit-mphone" class="col-sm-2 control-label">手机</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-mphone" value="12345678901">
+                            <input type="text" class="form-control" id="edit-mphone">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edit-email" class="col-sm-2 control-label">邮箱</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-email" value="lisi@bjpowernode.com">
+                            <input type="text" class="form-control" id="edit-email">
                         </div>
                         <label for="edit-birth" class="col-sm-2 control-label">生日</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="edit-birth">
+                            <input type="text" class="form-control time" id="edit-birth">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-customerName" class="col-sm-2 control-label">客户名称</label>
+                        <label for="edit-customerName" class="col-sm-2 control-label">客户名称<span
+                                style="font-size: 15px; color: red;">*</span></label>
                         <div class="col-sm-10" style="width: 300px;">
                             <input type="text" class="form-control" id="edit-customerName"
-                                   placeholder="支持自动补全，输入客户不存在则新建" value="动力节点">
+                                   placeholder="支持自动补全，输入客户不存在则新建">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-describe" class="col-sm-2 control-label">描述</label>
+                        <label for="edit-description" class="col-sm-2 control-label">描述</label>
                         <div class="col-sm-10" style="width: 81%;">
-                            <textarea class="form-control" rows="3" id="edit-describe">这是一条线索的描述信息</textarea>
+                            <textarea class="form-control" rows="3" id="edit-description"></textarea>
                         </div>
                     </div>
 
@@ -541,15 +728,15 @@
 
                     <div style="position: relative;top: 15px;">
                         <div class="form-group">
-                            <label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
+                            <label for="edit-contactSummary" class="col-sm-2 control-label">联系纪要</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
+                                <textarea class="form-control" rows="3" id="edit-contactSummary"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
+                            <label for="edit-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="create-nextContactTime">
+                                <input type="text" class="form-control time" id="edit-nextContactTime">
                             </div>
                         </div>
                     </div>
@@ -558,9 +745,9 @@
 
                     <div style="position: relative;top: 20px;">
                         <div class="form-group">
-                            <label for="edit-address1" class="col-sm-2 control-label">详细地址</label>
+                            <label for="edit-address" class="col-sm-2 control-label">详细地址</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="1" id="edit-address1">北京大兴区大族企业湾</textarea>
+                                <textarea class="form-control" rows="1" id="edit-address"></textarea>
                             </div>
                         </div>
                     </div>
@@ -569,7 +756,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                <button type="button" class="btn btn-primary" id="updateBtn">更新</button>
             </div>
         </div>
     </div>
@@ -587,10 +774,10 @@
         <h3>${contacts.fullname}${contacts.appellation} <small> - ${contacts.customerId}</small></h3>
     </div>
     <div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContactsModal"><span
+        <button type="button" class="btn btn-default" id="editBtn"><span
                 class="glyphicon glyphicon-edit"></span> 编辑
         </button>
-        <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+        <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
     </div>
 </div>
 
@@ -741,23 +928,24 @@
                     <td></td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td><a href="settings/transactionDetail.do" style="text-decoration: none;">动力节点-交易01</a></td>
-                    <td>5,000</td>
-                    <td>谈判/复审</td>
-                    <td>90</td>
-                    <td>2017-02-07</td>
-                    <td>新业务</td>
-                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#unbundModal"
-                           style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
-                </tr>
+                <tbody id="transactionBody">
+                <%--                <tr>--%>
+                <%--                    <td><a href="settings/transactionDetail.do" style="text-decoration: none;">动力节点-交易01</a></td>--%>
+                <%--                    <td>5,000</td>--%>
+                <%--                    <td>谈判/复审</td>--%>
+                <%--                    <td>90</td>--%>
+                <%--                    <td>2017-02-07</td>--%>
+                <%--                    <td>新业务</td>--%>
+                <%--                    <td><a href="javascript:void(0);" data-toggle="modal" data-target="#unbundModal"--%>
+                <%--                           style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>--%>
+                <%--                </tr>--%>
                 </tbody>
             </table>
         </div>
 
         <div>
-            <a href="settings/transactionSave.do" style="text-decoration: none;"><span
+            <a href="workbench/transaction/add.do?flag=true&id=${contacts.id}&fullname=${contacts.fullname}"
+               style="text-decoration: none;"><span
                     class="glyphicon glyphicon-plus"></span>新建交易</a>
         </div>
     </div>

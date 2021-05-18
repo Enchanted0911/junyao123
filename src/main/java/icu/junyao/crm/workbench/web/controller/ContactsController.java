@@ -6,12 +6,13 @@ import icu.junyao.crm.utils.DateTimeUtil;
 import icu.junyao.crm.utils.UUIDUtil;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.domain.Activity;
-import icu.junyao.crm.workbench.domain.ActivityRemark;
 import icu.junyao.crm.workbench.domain.Contacts;
 import icu.junyao.crm.workbench.domain.ContactsRemark;
+import icu.junyao.crm.workbench.domain.Tran;
 import icu.junyao.crm.workbench.service.ActivityService;
 import icu.junyao.crm.workbench.service.ContactsService;
 import icu.junyao.crm.workbench.service.CustomerService;
+import icu.junyao.crm.workbench.service.TranService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,6 +36,8 @@ public class ContactsController {
     private CustomerService customerService;
     @Resource
     private ActivityService activityService;
+    @Resource
+    private TranService tranService;
 
     @ResponseBody
     @RequestMapping("/pageList.do")
@@ -165,5 +168,14 @@ public class ContactsController {
     @RequestMapping("/unbind.do")
     public String doUnbind(String id) {
         return contactsService.unbind(id);
+    }
+
+    @ResponseBody
+    @RequestMapping("/getTransactionListByContactsId.do")
+    public List<Tran> doGetTransactionListByContactsId(HttpServletRequest request, String contactsId) {
+        Map<String, String> pMap = (Map<String, String>) request.getSession().getServletContext().getAttribute("pMap");
+        List<Tran> tranList = tranService.getTransactionListByContactsId(contactsId);
+        tranList.forEach(tran -> tran.setPossibility(pMap.get(tran.getStage())));
+        return tranList;
     }
 }

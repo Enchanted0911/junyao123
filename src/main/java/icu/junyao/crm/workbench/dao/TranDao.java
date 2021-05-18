@@ -56,4 +56,18 @@ public interface TranDao {
      * @return 返回一个List包含map map包含阶段 数量的键值对
      */
     List<Map<String, Object>> getCharts();
+
+    /**
+     * 通过联系人id获取该联系人的所有交易
+     * @param contactsId 联系人id
+     * @return 返回属于该联系人的所有交易组成的集合
+     */
+    List<Tran> getTransactionListByContactsId(String contactsId);
+
+    /**
+     * 删除交易
+     * @param ids 交易id
+     * @return 返回修改成功的条数
+     */
+    int delete(String[] ids);
 }

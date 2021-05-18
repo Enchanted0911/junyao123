@@ -49,7 +49,17 @@
             %>
 
         };
+        function judgeIfFromContacts() {
+            // flag标记由联系人主页中添加交易传来为真表示是联系人的业务需要给指定联系人添加交易, 联系人处的信息应该锁定为特定联系人
+            if (${flag}) {
+                $("#contactsName_01").val('${fullname}');
+                $("#contactId").val('${id}');
+            }
+        }
         $(function () {
+            // 判断请求是否来自联系人业务
+            judgeIfFromContacts();
+
             $(".time1").datetimepicker({
                 minView: "month",
                 format: 'yyyy-mm-dd',
@@ -143,6 +153,10 @@
 
             // 打开搜索联系人的模态窗口
             $("#openSearchContactsModelBtn").click(function () {
+                if (${flag}) {
+                    alert("只能创建指定联系人的交易!");
+                    return false;
+                }
                 $("#findContacts").modal("show");
             })
 
@@ -320,6 +334,7 @@
 </div>
 <form action="workbench/transaction/save.do" id="tranForm" class="form-horizontal" role="form"
       style="position: relative; top: -30px;" method="post">
+    <input type="hidden" name="flag" value="${flag}">
     <div class="form-group">
         <label for="create-transactionOwner" class="col-sm-2 control-label">所有者<span
                 style="font-size: 15px; color: red;">*</span></label>

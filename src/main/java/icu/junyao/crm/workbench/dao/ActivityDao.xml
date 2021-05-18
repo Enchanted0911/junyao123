@@ -117,7 +117,7 @@
         from tbl_activity a
                  join tbl_user u on a.owner = u.id
                  join tbl_clue_activity_relation car on a.id = car.activityId
-        where car.clueId = #{clueId}
+        where car.clueId = #{clueId} order by a.createTime desc
     </select>
     <select id="getActivityListByContactsId" resultType="Activity">
         select car.id id,
@@ -128,7 +128,7 @@
         from tbl_activity a
                  join tbl_user u on a.owner = u.id
                  join tbl_contacts_activity_relation car on a.id = car.activityId
-        where car.contactsId = #{contactsId}
+        where car.contactsId = #{contactsId} order by a.createTime desc
     </select>
     <select id="getActivityListByNameAndNotRelation" resultType="Activity">
         select a.id, a.name, a.startDate, a.endDate, u.name owner

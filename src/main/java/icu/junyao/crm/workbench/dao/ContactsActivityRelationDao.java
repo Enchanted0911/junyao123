@@ -20,4 +20,18 @@ public interface ContactsActivityRelationDao {
      * @return 返回修改成功的数据
      */
     int unbind(String id);
+
+    /**
+     * 根据联系人id 获取所有该联系人关联市场活动条数
+     * @param ids 联系人id数组
+     * @return 返回该联系人关联的市场活动总条数
+     */
+    int getCountByContactsIds(String[] ids);
+
+    /**
+     * 根据联系人id数组删除所有和这些联系人关联的市场活动关联关系
+     * @param ids 联系人id数组
+     * @return 删除成功的记录数
+     */
+    int deleteByContactsIds(String[] ids);
 }

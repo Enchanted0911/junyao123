@@ -27,6 +27,19 @@
         where tranId = #{tranId}
         order by createTime desc
     </select>
+    <delete id="delete">
+        delete from tbl_tran_history where tranId in
+        <foreach collection="array" item="tranId" open="(" close=")" separator=",">
+            #{tranId}
+        </foreach>
+    </delete>
+    <select id="getCountByTranIds" resultType="int">
+        select count(*) from tbl_tran_history
+        where tranId in
+        <foreach collection="array" item="tranId" open="(" close=")" separator=",">
+            #{tranId}
+        </foreach>
+    </select>
 </mapper>
 
 

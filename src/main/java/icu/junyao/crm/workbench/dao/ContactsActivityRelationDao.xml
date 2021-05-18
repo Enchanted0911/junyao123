@@ -10,6 +10,20 @@
     <delete id="unbind">
         delete from tbl_contacts_activity_relation where id = #{id}
     </delete>
+    <select id="getCountByContactsIds" resultType="int">
+        select count(*) from tbl_contacts_activity_relation
+        where contactsId in
+        <foreach collection="array" item="contactsId" open="(" close=")" separator=",">
+            #{contactsId}
+        </foreach>
+    </select>
+    <delete id="deleteByContactsIds">
+        delete from tbl_contacts_activity_relation
+        where contactsId in
+        <foreach collection="array" item="contactsId" open="(" close=")" separator=",">
+            #{contactsId}
+        </foreach>
+    </delete>
 </mapper>
 
 

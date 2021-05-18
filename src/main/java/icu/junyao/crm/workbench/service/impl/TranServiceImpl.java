@@ -5,6 +5,7 @@ import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.dao.CustomerDao;
 import icu.junyao.crm.workbench.dao.TranDao;
 import icu.junyao.crm.workbench.dao.TranHistoryDao;
+import icu.junyao.crm.workbench.dao.TranRemarkDao;
 import icu.junyao.crm.workbench.domain.Customer;
 import icu.junyao.crm.workbench.domain.Tran;
 import icu.junyao.crm.workbench.domain.TranHistory;
@@ -27,6 +28,8 @@ public class TranServiceImpl implements TranService {
     private TranHistoryDao tranHistoryDao;
     @Resource
     private CustomerDao customerDao;
+    @Resource
+    private TranRemarkDao tranRemarkDao;
 
     @Override
     public boolean transactionSave(Tran tran, String customerName) {
@@ -102,5 +105,25 @@ public class TranServiceImpl implements TranService {
         map.put("total", tranDao.getTotal());
         map.put("dataList", tranDao.getCharts());
         return map;
+    }
+
+    @Override
+    public List<Tran> getTransactionListByContactsId(String contactsId) {
+        return tranDao.getTransactionListByContactsId(contactsId);
+    }
+
+    @Override
+    public String delete(String[] ids) {
+        boolean flag = true;
+        if (tranRemarkDao.getCountByTranIds(ids) != tranRemarkDao.deleteByTranIds(ids)) {
+            flag = false;
+        }
+        if (tranHistoryDao.getCountByTranIds(ids) != tranHistoryDao.delete(ids)) {
+            flag = false;
+        }
+        if (tranDao.delete(ids) != ids.length) {
+            flag = false;
+        }
+        return flag ? "true" : "false";
     }
 }

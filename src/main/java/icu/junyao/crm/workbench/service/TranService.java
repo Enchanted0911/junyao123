@@ -53,4 +53,18 @@ public interface TranService {
      * @return 返回map包含一个数据总条数以及分组查询后的每个阶段对应的总条数
      */
     Map<String, Object> getCharts();
+
+    /**
+     * 根据联系人的id查询相关联的交易 为联系人详情页的交易列表提供
+     * @param contactsId 联系人ID
+     * @return 返回属于该联系人的交易的集合
+     */
+    List<Tran> getTransactionListByContactsId(String contactsId);
+
+    /**
+     * 联系人业务中删除一条某特定交易
+     * @param ids 交易id
+     * @return 返回"true"表示成功
+     */
+    String delete(String[] ids);
 }

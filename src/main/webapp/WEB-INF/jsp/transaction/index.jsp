@@ -54,7 +54,34 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		$("#transactionBody").on("click", $("input[name = checkbox01]"), function () {
 			$("#selectAll").prop("checked", $("input[name = checkbox01]").length === $("input[name = checkbox01]:checked").length);
 		});
-		
+
+		// 删除操作
+		$("#deleteBtn").click(function () {
+			let $checkbox01 = $("input[name = checkbox01]:checked");
+			if ($checkbox01.length === 0) {
+				alert("请选择要删除的记录");
+			} else {
+				if (confirm("确定删除所选的记录吗 ? ")) {
+					let param = "";
+					for (let i = 0; i < $checkbox01.length; i++) {
+						param += i === $checkbox01.length - 1 ? "id=" + $($checkbox01[i]).val() : "id=" + $($checkbox01[i]).val() + "&";
+					}
+					$.ajax({
+						url: "workbench/transaction/delete.do",
+						data: param,
+						type: "post",
+						success: function (data) {
+							if (data === "true") {
+								// 有待完善
+								pageList(1, $("#transactionPage").bs_pagination('getOption', 'rowsPerPage'));
+							} else {
+								alert("sorry!删除交易失败 !");
+							}
+						}
+					})
+				}
+			}
+		});
 		
 	});
 	function pageList(pageNo, pageSize) {
@@ -225,7 +252,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 10px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" onclick="window.location.href='workbench/transaction/add.do';"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" onclick="window.location.href='workbench/transaction/add.do?flag=false';"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" onclick="window.location.href='workbench/transaction/edit.do';"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>

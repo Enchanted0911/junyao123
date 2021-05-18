@@ -116,6 +116,9 @@ public class ContactsServiceImpl implements ContactsService {
         if (count03 != ids.length) {
             flag = false;
         }
+        if (contactsActivityRelationDao.getCountByContactsIds(ids) != contactsActivityRelationDao.deleteByContactsIds(ids)) {
+            flag = false;
+        }
         return flag;
     }
 

@@ -407,7 +407,7 @@
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 20px;">
         <div style="width: 300px; color: gray;">客户名称</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.customerId}</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>&nbsp;${tran.customerId}</b></div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">阶段</div>
         <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="stage">${tran.stage}</b></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
@@ -432,7 +432,7 @@
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 50px;">
         <div style="width: 300px; color: gray;">联系人名称</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${tran.contactsId}</b></div>
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>&nbsp;${tran.contactsId}</b></div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 60px;">

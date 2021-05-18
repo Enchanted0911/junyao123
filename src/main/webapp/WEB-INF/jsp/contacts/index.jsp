@@ -239,7 +239,7 @@
                             // 关闭模态窗口
                             $("#editContactsModal").modal("hide");
                         } else {
-                            alert("修改市场活动失败");
+                            alert("修改联系人失败");
                         }
                     }
                 })
@@ -265,7 +265,7 @@
                                     // 有待完善
                                     pageList(1, $("#contactsPage").bs_pagination('getOption', 'rowsPerPage'));
                                 } else {
-                                    alert("sorry!删除市场活动失败 !");
+                                    alert("sorry!删除联系人失败 !");
                                 }
                             }
                         })

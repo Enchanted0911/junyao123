@@ -22,4 +22,18 @@ public interface TranHistoryDao {
      * @return 交易历史列表
      */
     List<TranHistory> getHistoryListByTranId(String tranId);
+
+    /**
+     * 根据交易id删除所有这些交易的交易历史
+     * @param ids 交易id数组
+     * @return 返回删除成功的条数
+     */
+    int delete(String[] ids);
+
+    /**
+     * 根据交易的id数组返回所有这些交易的交易历史
+     * @param ids 交易的id数组
+     * @return 返回所有这些id的交易历史条数
+     */
+    int getCountByTranIds(String[] ids);
 }
