@@ -18,4 +18,36 @@
             #{tranId}
         </foreach>
     </delete>
+    <select id="getRemarkListByTranId" resultType="TranRemark">
+        select * from tbl_tran_remark where tranId=#{tranId}
+    </select>
+    <insert id="remarkSave">
+        insert into tbl_tran_remark (id,
+                                         noteContent,
+                                         createTime,
+                                         createBy,
+                                         editTime,
+                                         editBy,
+                                         editFlag,
+                                         tranId)
+        values (#{id},
+                #{noteContent},
+                #{createTime},
+                #{createBy},
+                #{editTime},
+                #{editBy},
+                #{editFlag},
+                #{tranId})
+    </insert>
+    <delete id="removeRemarkById">
+        delete from tbl_tran_remark where id=#{id}
+    </delete>
+    <update id="remarkUpdate">
+        update tbl_tran_remark
+        set noteContent = #{noteContent},
+            editBy = #{editBy},
+            editTime = #{editTime},
+            editFlag = #{editFlag}
+        where id = #{id}
+    </update>
 </mapper>

@@ -34,6 +34,7 @@
     <link rel="apple-touch-icon" href="static/imgs/title/cat.png">
     <link rel="apple-touch-icon" sizes="72x72" href="static/imgs/title/cat.png">
     <link rel="apple-touch-icon" sizes="114x114" href="static/imgs/title/cat.png">
+    <script src="static/js/jquery-3.6.0.min.js"></script>
 
     <!-- Leaflet CSS - For the map-->
     <link rel="stylesheet" href="static/css/leaflet.css">
@@ -42,6 +43,13 @@
     <script src="static/js/respond.min.js"></script><![endif]-->
     <base href="<%=basePath%>"/>
 
+    <script>
+        $(function () {
+            if(window.top !== window) {
+                window.top.location = window.location;
+            }
+        })
+    </script>
 </head>
 <body>
 <section id="intro" style="background-image: url('static/imgs/home/home.jpg');background-size:auto auto;" class="intro">

@@ -55,6 +55,19 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			$("#selectAll").prop("checked", $("input[name = checkbox01]").length === $("input[name = checkbox01]:checked").length);
 		});
 
+		// 跳转到修改的界面
+		$("#editBtn").click(function () {
+			let $checkbox01 = $("input[name = checkbox01]:checked");
+			if ($checkbox01.length === 0) {
+				alert("请选择要修改的记录 !");
+			} else if ($checkbox01.length > 1) {
+				alert("每次只能修改一条记录, 请选择要修改的那条 !");
+			} else {
+				let id = $checkbox01.val();
+				window.location.href = "workbench/transaction/getUserListAndTran.do?id=" + id;
+			}
+		});
+
 		// 删除操作
 		$("#deleteBtn").click(function () {
 			let $checkbox01 = $("input[name = checkbox01]:checked");
@@ -253,7 +266,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 10px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" onclick="window.location.href='workbench/transaction/add.do?flag=false';"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" onclick="window.location.href='workbench/transaction/edit.do';"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				

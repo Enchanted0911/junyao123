@@ -4,9 +4,7 @@ import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.utils.DateTimeUtil;
 import icu.junyao.crm.utils.UUIDUtil;
 import icu.junyao.crm.vo.PaginationVO;
-import icu.junyao.crm.workbench.domain.Contacts;
-import icu.junyao.crm.workbench.domain.Tran;
-import icu.junyao.crm.workbench.domain.TranHistory;
+import icu.junyao.crm.workbench.domain.*;
 import icu.junyao.crm.workbench.service.ActivityService;
 import icu.junyao.crm.workbench.service.ContactsService;
 import icu.junyao.crm.workbench.service.CustomerService;
@@ -143,5 +141,62 @@ public class TranController {
     public String doDelete(HttpServletRequest request) {
         String[] ids = request.getParameterValues("id");
         return tranService.delete(ids);
+    }
+
+    @ResponseBody
+    @RequestMapping("/getUserListAndTran.do")
+    public ModelAndView getUserListAndTran(HttpServletRequest request, ModelAndView mv, String id) {
+        Tran tran = tranService.tranDetail(id);
+        String possibility = ((Map<String, String>) request.getSession().getServletContext().getAttribute("pMap")).get(tran.getStage());
+        tran.setPossibility(possibility);
+        mv.addObject("tran", tran);
+        mv.addObject("uList", tranService.getUserList());
+        mv.setViewName("transaction/edit");
+        return mv;
+    }
+
+    @RequestMapping("/update.do")
+    public String doUpdate(HttpServletRequest request, Tran tran, String customerName) {
+        tran.setEditTime(DateTimeUtil.getSysTime());
+        tran.setEditBy(((User) request.getSession().getAttribute("user")).getName());
+        // 如果是联系人业务添加交易, 创建成功后返回联系人详情页
+        return tranService.transactionUpdate(tran, customerName) ? "transaction/index" : null;
+    }
+
+    @ResponseBody
+    @RequestMapping("/getRemarkListByTranId.do")
+    public List<TranRemark> doGetRemarkListByTranId(String tranId) {
+        return tranService.getRemarkListByTranId(tranId);
+    }
+
+    @ResponseBody
+    @RequestMapping("/remarkSave.do")
+    public Map<String, Object> doTranRemarkSave(HttpServletRequest request, String noteContent, String tranId) {
+        TranRemark tranRemark = new TranRemark();
+        tranRemark.setTranId(tranId);
+        tranRemark.setNoteContent(noteContent);
+        tranRemark.setCreateBy(((User)request.getSession().getAttribute("user")).getName());
+        tranRemark.setCreateTime(DateTimeUtil.getSysTime());
+        tranRemark.setId(UUIDUtil.getUUID());
+        tranRemark.setEditFlag("0");
+        return tranService.tranRemarkSave(tranRemark);
+    }
+
+    @ResponseBody
+    @RequestMapping("/removeRemark.do")
+    public String doTranRemoveRemark(String id) {
+        return tranService.tranRemoveRemark(id);
+    }
+
+    @ResponseBody
+    @RequestMapping("/updateRemark.do")
+    public Map<String, Object> doTranUpdateRemark(HttpServletRequest request, String id, String noteContent) {
+        TranRemark tranRemark = new TranRemark();
+        tranRemark.setId(id);
+        tranRemark.setNoteContent(noteContent);
+        tranRemark.setEditTime(DateTimeUtil.getSysTime());
+        tranRemark.setEditBy(((User)request.getSession().getAttribute("user")).getName());
+        tranRemark.setEditFlag("1");
+        return tranService.tranUpdateRemark(tranRemark);
     }
 }

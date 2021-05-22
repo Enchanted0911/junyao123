@@ -1,8 +1,10 @@
 package icu.junyao.crm.workbench.service;
 
+import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.domain.Tran;
 import icu.junyao.crm.workbench.domain.TranHistory;
+import icu.junyao.crm.workbench.domain.TranRemark;
 
 import java.util.List;
 import java.util.Map;
@@ -67,4 +69,46 @@ public interface TranService {
      * @return 返回"true"表示成功
      */
     String delete(String[] ids);
+
+    /**
+     * 得到用户列表
+     * @return 所有用户列表
+     */
+    List<User> getUserList();
+
+    /**
+     * 更新一条交易信息
+     * @param tran 交易
+     * @param customerName 客户名称, 如果不存在则创建
+     * @return 返回true表示成功
+     */
+    boolean transactionUpdate(Tran tran, String customerName);
+
+    /**
+     * 通过交易id获取交易备注
+     * @param tranId 交易id
+     * @return 返回交易备注集合
+     */
+    List<TranRemark> getRemarkListByTranId(String tranId);
+
+    /**
+     * 保存一条交易的备注信息
+     * @param tranRemark 交易备注信息
+     * @return map包含flag成功标记和保存的备注信息
+     */
+    Map<String, Object> tranRemarkSave(TranRemark tranRemark);
+
+    /**
+     * 删除一条交易备注信息
+     * @param id 备注id
+     * @return 返回"true"表示成功
+     */
+    String tranRemoveRemark(String id);
+
+    /**
+     * 更新一条交易备注
+     * @param tranRemark 交易备注
+     * @return 包含一个flag标记和修改后的交易备注
+     */
+    Map<String, Object> tranUpdateRemark(TranRemark tranRemark);
 }

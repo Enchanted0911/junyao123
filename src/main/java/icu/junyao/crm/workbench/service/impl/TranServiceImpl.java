@@ -1,5 +1,6 @@
 package icu.junyao.crm.workbench.service.impl;
 
+import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.utils.UUIDUtil;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.dao.CustomerDao;
@@ -9,6 +10,7 @@ import icu.junyao.crm.workbench.dao.TranRemarkDao;
 import icu.junyao.crm.workbench.domain.Customer;
 import icu.junyao.crm.workbench.domain.Tran;
 import icu.junyao.crm.workbench.domain.TranHistory;
+import icu.junyao.crm.workbench.domain.TranRemark;
 import icu.junyao.crm.workbench.service.TranService;
 import org.springframework.stereotype.Service;
 
@@ -125,5 +127,71 @@ public class TranServiceImpl implements TranService {
             flag = false;
         }
         return flag ? "true" : "false";
+    }
+
+    @Override
+    public List<User> getUserList() {
+        return tranDao.tranGetUserList();
+    }
+
+    @Override
+    public boolean transactionUpdate(Tran tran, String customerName) {
+        boolean flag = true;
+        Customer customer = customerDao.getCustomerByName(customerName);
+        if (customer == null) {
+            customer = new Customer();
+            customer.setId(UUIDUtil.getUUID());
+            customer.setName(customerName);
+            customer.setCreateBy(tran.getCreateBy());
+            customer.setCreateTime(tran.getCreateTime());
+            customer.setContactSummary(tran.getContactSummary());
+            customer.setNextContactTime(tran.getNextContactTime());
+            customer.setOwner(tran.getOwner());
+            if (customerDao.save(customer) != 1) {
+                flag = false;
+            }
+        }
+        tran.setCustomerId(customer.getId());
+        if (tranDao.update(tran) != 1) {
+            flag = false;
+        }
+        TranHistory tranHistory = new TranHistory();
+        tranHistory.setId(UUIDUtil.getUUID());
+        tranHistory.setCreateBy(tran.getCreateBy());
+        tranHistory.setCreateTime(tran.getCreateTime());
+        tranHistory.setMoney(tran.getMoney());
+        tranHistory.setStage(tran.getStage());
+        tranHistory.setTranId(tran.getId());
+        tranHistory.setExpectedDate(tran.getExpectedDate());
+        if (tranHistoryDao.save(tranHistory) != 1) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    @Override
+    public List<TranRemark> getRemarkListByTranId(String tranId) {
+        return tranRemarkDao.getRemarkListByTranId(tranId);
+    }
+
+    @Override
+    public Map<String, Object> tranRemarkSave(TranRemark tranRemark) {
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("flag", tranRemarkDao.remarkSave(tranRemark) == 1);
+        map.put("tranRemark", tranRemark);
+        return map;
+    }
+
+    @Override
+    public String tranRemoveRemark(String id) {
+        return tranRemarkDao.removeRemarkById(id) == 1 ? "true" : "false";
+    }
+
+    @Override
+    public Map<String, Object> tranUpdateRemark(TranRemark tranRemark) {
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("flag", tranRemarkDao.remarkUpdate(tranRemark) == 1);
+        map.put("tranRemark", tranRemark);
+        return map;
     }
 }

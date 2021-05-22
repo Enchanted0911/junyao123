@@ -1,5 +1,6 @@
 package icu.junyao.crm.workbench.dao;
 
+import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.workbench.domain.Tran;
 
 import java.util.List;
@@ -70,4 +71,17 @@ public interface TranDao {
      * @return 返回修改成功的条数
      */
     int delete(String[] ids);
+
+    /**
+     * 获取所有用户列表
+     * @return 所有用户组成的列表
+     */
+    List<User> tranGetUserList();
+
+    /**
+     * 更新一条交易信息
+     * @param tran 交易
+     * @return 返回1表示成功
+     */
+    int update(Tran tran);
 }
