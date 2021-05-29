@@ -172,4 +172,9 @@ public class ContactsServiceImpl implements ContactsService {
     public String unbind(String id) {
         return contactsActivityRelationDao.unbind(id) == 1 ? "true" : "false";
     }
+
+    @Override
+    public List<Contacts> getContactsListByCustomerId(String customerId) {
+        return contactsDao.getContactsListByCustomerId(customerId);
+    }
 }

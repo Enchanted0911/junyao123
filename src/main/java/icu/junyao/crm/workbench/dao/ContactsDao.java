@@ -79,4 +79,11 @@ public interface ContactsDao {
      * @return 联系人
      */
     Contacts contactsDetail(String id);
+
+    /**
+     * 根据客户id查询出所有该客户的联系人
+     * @param customerId 客户id
+     * @return 联系人列表
+     */
+    List<Contacts> getContactsListByCustomerId(String customerId);
 }

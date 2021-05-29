@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="icu.junyao.crm.workbench.dao.TaskDao">
+    <select id="taskPageList" resultType="Task">
+        select t.id, t.theme, u.name owner, t.expectedDate, c.fullname contactsId, t.status, t.priority
+        from tbl_task t
+        left join tbl_contacts c on t.contactsId = c.id
+        join tbl_user u on t.owner = u.id
+        <where>
+            <if test="theme != null and theme != ''">
+                t.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="status != null and status != ''">
+                and t.status = #{status}
+            </if>
+            <if test="expectedDate != null and expectedDate != ''">
+                and t.expectedDate &lt;= #{expectedDate}
+            </if>
+            <if test="priority != null and priority != ''">
+                and t.priority = #{priority}
+            </if>
+            <if test="contactsName != null and contactsName != ''">
+                and c.fullname like '%' #{contactsName} '%'
+            </if>
+        </where>
+        order by t.createTime desc
+        limit #{skipCount}, #{pageSize}
+    </select>
+    <select id="taskPageListTotalNum" resultType="int">
+        select count(*)
+        from tbl_task t
+        left join tbl_contacts c on t.contactsId = c.id
+        join tbl_user u on t.owner = u.id
+        <where>
+            <if test="theme != null and theme != ''">
+                t.name like '%' #{name} '%'
+            </if>
+            <if test="owner != null and owner != ''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="status != null and status != ''">
+                and t.status = #{status}
+            </if>
+            <if test="expectedDate != null and expectedDate != ''">
+                and t.expectedDate = #{expectedDate}
+            </if>
+            <if test="priority != null and priority != ''">
+                and t.priority = #{priority}
+            </if>
+            <if test="contactsName != null and contactsName != ''">
+                and c.fullname like '%' #{contactsName} '%'
+            </if>
+        </where>
+    </select>
+    <insert id="save">
+        insert into tbl_task (id,
+                              expectedDate,
+                              contactsId,
+                              status,
+                              priority,
+                              owner,
+                              description,
+                              theme,
+                              startDate,
+                              repeatType,
+                              notifyType,
+                              createTime,
+                              createBy)
+        values (#{id},
+                #{expectedDate},
+                #{contactsId},
+                #{status},
+                #{priority},
+                #{owner},
+                #{description},
+                #{theme},
+                #{startDate},
+                #{repeatType},
+                #{notifyType},
+                #{createTime},
+                #{createBy})
+    </insert>
+    <select id="taskDetail" resultType="Task">
+        select u.name     owner,
+               t.theme,
+               t.expectedDate,
+               c.fullname contactsId,
+               t.status,
+               t.priority,
+               t.description,
+               t.startDate,
+               t.repeatType,
+               t.id,
+               t.notifyType
+        from tbl_task t
+                 join tbl_user u on t.owner = u.id
+                 left join tbl_contacts c on t.contactsId = c.id
+        where t.id = #{id}
+    </select>
+    <update id="update">
+        update tbl_task
+        set expectedDate=#{expectedDate},
+            contactsId=#{contactsId},
+            status=#{status},
+            priority=#{priority},
+            owner=#{owner},
+            description=#{description},
+            theme=#{theme},
+            startDate=#{startDate},
+            repeatType=#{repeatType},
+            notifyType=#{notifyType},
+            editTime=#{editTime},
+            editBy=#{editBy}
+        where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from tbl_task where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

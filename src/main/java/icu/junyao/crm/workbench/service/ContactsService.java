@@ -4,6 +4,7 @@ import icu.junyao.crm.settings.domain.User;
 import icu.junyao.crm.vo.PaginationVO;
 import icu.junyao.crm.workbench.domain.Contacts;
 import icu.junyao.crm.workbench.domain.ContactsRemark;
+import icu.junyao.crm.workbench.domain.Tran;
 
 import java.util.List;
 import java.util.Map;
@@ -78,8 +79,8 @@ public interface ContactsService {
 
     /**
      * 添加一条联系人备注
-     * @param contactsRemark 要添加的联系人
-     * @return 返回的map包括结果标记 和 被添加的联系人
+     * @param contactsRemark 要添加的联系人备注
+     * @return 返回的map包括结果标记 和 被添加的联系人备注
      */
     Map<String, Object> contactsRemarkSave(ContactsRemark contactsRemark);
 
@@ -111,4 +112,11 @@ public interface ContactsService {
      * @return 返回"true" 表示成功
      */
     String unbind(String id);
+
+    /**
+     * 通过客户id获取该客户对应的所有联系人
+     * @param customerId 客户id
+     * @return 该客户的所有联系人的列表
+     */
+    List<Contacts> getContactsListByCustomerId(String customerId);
 }

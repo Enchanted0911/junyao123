@@ -84,4 +84,11 @@ public interface TranDao {
      * @return 返回1表示成功
      */
     int update(Tran tran);
+
+    /**
+     * 通过客户id获取该联系人的所有交易
+     * @param customerId 客户id
+     * @return 返回属于该客户的所有交易组成的集合
+     */
+    List<Tran> getTransactionListByCustomerId(String customerId);
 }

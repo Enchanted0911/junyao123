@@ -74,7 +74,7 @@ public class ActivityServiceImpl implements ActivityService {
     public Map<String, Object> getUserListAndActivity(String id) {
         List<User> uList = activityDao.activityGetUserList();
         Activity activity = activityDao.getActivityById(id);
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<>(8);
         map.put("uList", uList);
         map.put("activity", activity);
         return map;

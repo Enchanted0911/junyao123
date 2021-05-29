@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="icu.junyao.crm.workbench.dao.TaskRemarkDao">
+    <select id="getCountByTaskIds" resultType="int">
+        select count(*) from tbl_task_remark
+        where taskId in
+        <foreach collection="array" item="taskId" open="(" close=")" separator=",">
+            #{taskId}
+        </foreach>
+    </select>
+    <delete id="deleteByTaskIds">
+        delete from tbl_task_remark
+        where taskId in
+        <foreach collection="array" item="taskId" open="(" close=")" separator=",">
+            #{taskId}
+        </foreach>
+    </delete>
+    <select id="getRemarkListByTaskId" resultType="TaskRemark">
+        select *
+        from tbl_task_remark
+        where taskId = #{taskId}
+    </select>
+    <insert id="remarkSave">
+        insert into tbl_task_remark (id,
+                                     noteContent,
+                                     createTime,
+                                     createBy,
+                                     editTime,
+                                     editBy,
+                                     editFlag,
+                                     taskId)
+        values (#{id},
+                #{noteContent},
+                #{createTime},
+                #{createBy},
+                #{editTime},
+                #{editBy},
+                #{editFlag},
+                #{taskId})
+    </insert>
+    <delete id="removeRemarkById">
+        delete from tbl_task_remark where id=#{id}
+    </delete>
+    <update id="remarkUpdate">
+        update tbl_task_remark
+        set noteContent = #{noteContent},
+            editBy = #{editBy},
+            editTime = #{editTime},
+            editFlag = #{editFlag}
+        where id = #{id}
+    </update>
+</mapper>

@@ -64,7 +64,7 @@ public interface TranService {
     List<Tran> getTransactionListByContactsId(String contactsId);
 
     /**
-     * 联系人业务中删除一条某特定交易
+     * 删除交易
      * @param ids 交易id
      * @return 返回"true"表示成功
      */
@@ -111,4 +111,11 @@ public interface TranService {
      * @return 包含一个flag标记和修改后的交易备注
      */
     Map<String, Object> tranUpdateRemark(TranRemark tranRemark);
+
+    /**
+     * 根据客户的id查询相关联的交易 为客户详情页的交易列表提供
+     * @param customerId 客户ID
+     * @return 返回属于该客户的交易的集合
+     */
+    List<Tran> getTransactionListByCustomerId(String customerId);
 }

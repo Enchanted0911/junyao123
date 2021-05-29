@@ -70,11 +70,11 @@ public class TranServiceImpl implements TranService {
 
     @Override
     public PaginationVO<Tran> tranPageList(Map<String, Object> map) {
-        List<Tran> contactsList = tranDao.tranPageList(map);
+        List<Tran> tranList = tranDao.tranPageList(map);
         int total = tranDao.tranPageListTotalNum(map);
         PaginationVO<Tran> vo = new PaginationVO<>();
         vo.setTotal(total);
-        vo.setDataList(contactsList);
+        vo.setDataList(tranList);
         return vo;
     }
 
@@ -193,5 +193,10 @@ public class TranServiceImpl implements TranService {
         map.put("flag", tranRemarkDao.remarkUpdate(tranRemark) == 1);
         map.put("tranRemark", tranRemark);
         return map;
+    }
+
+    @Override
+    public List<Tran> getTransactionListByCustomerId(String customerId) {
+        return tranDao.getTransactionListByCustomerId(customerId);
     }
 }

@@ -53,6 +53,20 @@ public class TranController {
     }
 
     @ResponseBody
+    @RequestMapping("/cusAdd.do")
+    public ModelAndView gotoAddPageForCus(HttpServletRequest request, Boolean flagCus) {
+        ModelAndView modelAndView = new ModelAndView();
+        List<User> userList = activityService.activityGetUserList();
+        modelAndView.addObject("userList", userList);
+        modelAndView.addObject("flagCus", true);
+        modelAndView.addObject("flag", false);
+        modelAndView.addObject("name", request.getParameter("name"));
+        modelAndView.addObject("id", request.getParameter("id"));
+        modelAndView.setViewName("transaction/save");
+        return modelAndView;
+    }
+
+    @ResponseBody
     @RequestMapping("/getCustomerName.do")
     public List<String> doGetCustomerName(String name) {
         return customerService.getCustomerName(name);
@@ -66,7 +80,7 @@ public class TranController {
 
 
     @RequestMapping("/save.do")
-    public String doSave(HttpServletRequest request, Tran tran, String customerName, Boolean flag) {
+    public String doSave(HttpServletRequest request, Tran tran, String customerName, Boolean flag, Boolean flagCus, String customerId) {
         tran.setId(UUIDUtil.getUUID());
         tran.setCreateTime(DateTimeUtil.getSysTime());
         tran.setCreateBy(((User) request.getSession().getAttribute("user")).getName());
@@ -74,7 +88,7 @@ public class TranController {
         if (flag && tranService.transactionSave(tran, customerName)) {
             return "redirect:/workbench/contacts/detail.do?id=" + tran.getContactsId() + "";
         }
-        return tranService.transactionSave(tran, customerName) ? "transaction/index" : null;
+        return tranService.transactionSave(tran, customerName) ? flagCus ? "redirect:/workbench/customer/detail.do?id=" + customerId + "" : "transaction/index" : null;
     }
 
     @ResponseBody
@@ -159,7 +173,6 @@ public class TranController {
     public String doUpdate(HttpServletRequest request, Tran tran, String customerName) {
         tran.setEditTime(DateTimeUtil.getSysTime());
         tran.setEditBy(((User) request.getSession().getAttribute("user")).getName());
-        // 如果是联系人业务添加交易, 创建成功后返回联系人详情页
         return tranService.transactionUpdate(tran, customerName) ? "transaction/index" : null;
     }
 
@@ -175,7 +188,7 @@ public class TranController {
         TranRemark tranRemark = new TranRemark();
         tranRemark.setTranId(tranId);
         tranRemark.setNoteContent(noteContent);
-        tranRemark.setCreateBy(((User)request.getSession().getAttribute("user")).getName());
+        tranRemark.setCreateBy(((User) request.getSession().getAttribute("user")).getName());
         tranRemark.setCreateTime(DateTimeUtil.getSysTime());
         tranRemark.setId(UUIDUtil.getUUID());
         tranRemark.setEditFlag("0");
@@ -195,7 +208,7 @@ public class TranController {
         tranRemark.setId(id);
         tranRemark.setNoteContent(noteContent);
         tranRemark.setEditTime(DateTimeUtil.getSysTime());
-        tranRemark.setEditBy(((User)request.getSession().getAttribute("user")).getName());
+        tranRemark.setEditBy(((User) request.getSession().getAttribute("user")).getName());
         tranRemark.setEditFlag("1");
         return tranService.tranUpdateRemark(tranRemark);
     }
