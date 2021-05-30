@@ -42,6 +42,73 @@
                 //当前项目颜色变成白色
                 $(this).children("a").css("color", "white");
             });
+            $("#openEditPwdModal").click(function () {
+                $("#newPwd").val("");
+                $("#oldPwd").val("");
+                $("#confirmPwd").val("");
+                $("#editPwdModal").modal("show");
+            })
+            $("#updatePwdBtn").click(function () {
+                let regex = /\s+/;
+                if ($("#oldPwd").val() == "" || $("#oldPwd").val() == null) {
+                    alert("原密码为空, 请重新输入!");
+                    $("#newPwd").val("");
+                    $("#oldPwd").val("");
+                    $("#confirmPwd").val("");
+                    return false;
+                }
+                if ($("#newPwd").val() == "" || $("#newPwd").val() == null) {
+                    alert("请输入新密码!");
+                    $("#newPwd").val("");
+                    $("#confirmPwd").val("");
+                    return false;
+                }
+                if (regex.test($("#oldPwd").val())) {
+                    alert("密码中不能包含空白符, 请重新输入!");
+                    $("#newPwd").val("");
+                    $("#oldPwd").val("");
+                    $("#confirmPwd").val("");
+                    return false;
+                }
+                if ($("#newPwd").val() !== $("#confirmPwd").val()) {
+                    alert("两次输入的密码不一致, 请重新输入");
+                    $("#newPwd").val("");
+                    $("#confirmPwd").val("");
+                    return false;
+                }
+                if (regex.test($("#newPwd").val())) {
+                    alert("密码中不能包含空白符, 请重新输入!");
+                    $("#newPwd").val("");
+                    $("#confirmPwd").val("");
+                    return false;
+                }
+                $.ajax({
+                    url : "settings/updatePwd.do",
+                    data : {
+                        "id" : "${user.id}",
+                        "oldPwd" : $("#oldPwd").val(),
+                        "newPwd" : $("#newPwd").val()
+                    },
+                    type : "post",
+                    dataType : "json",
+                    success : function (data) {
+                        // flag是验证旧密码正确标记 flag1 是验证修改密码成功标记
+                        if (data.flag == true) {
+                            if (data.flag1 == true) {
+                                alert("密码修改成功, 即将跳转到登录界面");
+                                window.location.href = "static/crm/login.jsp";
+                            } else {
+                                alert("未知错误, 修改密码失败!");
+                            }
+                        } else {
+                            alert("原密码错误! 请重新输入");
+                            $("#newPwd").val("");
+                            $("#confirmPwd").val("");
+                            $("#oldPwd").val("");
+                        }
+                    }
+                })
+            })
 
 
             window.open("settings/mainIndex.do", "workareaFrame");
@@ -65,12 +132,12 @@
             </div>
             <div class="modal-body">
                 <div style="position: relative; left: 40px;">
-                    姓名：<b>张三</b><br><br>
-                    登录帐号：<b>zhangsan</b><br><br>
-                    组织机构：<b>1005，市场部，二级部门</b><br><br>
-                    邮箱：<b>zhangsan@bjpowernode.com</b><br><br>
-                    失效时间：<b>2017-02-14 10:10:10</b><br><br>
-                    允许访问IP：<b>127.0.0.1,192.168.100.2</b>
+                    姓名：<b>${user.name}</b><br><br>
+                    登录帐号：<b>${user.loginAct}</b><br><br>
+                    组织机构：<b>${user.deptno}</b><br><br>
+                    邮箱：<b>${user.email}</b><br><br>
+                    失效时间：<b>${user.expireTime}</b><br><br>
+                    允许访问IP：<b>${user.allowIps}</b>
                 </div>
             </div>
             <div class="modal-footer">
@@ -95,29 +162,28 @@
                     <div class="form-group">
                         <label for="oldPwd" class="col-sm-2 control-label">原密码</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="oldPwd" style="width: 200%;">
+                            <input type="password" class="form-control" id="oldPwd" style="width: 200%;">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="newPwd" class="col-sm-2 control-label">新密码</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="newPwd" style="width: 200%;">
+                            <input type="password" class="form-control" id="newPwd" style="width: 200%;">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="confirmPwd" class="col-sm-2 control-label">确认密码</label>
                         <div class="col-sm-10" style="width: 300px;">
-                            <input type="text" class="form-control" id="confirmPwd" style="width: 200%;">
+                            <input type="password" class="form-control" id="confirmPwd" style="width: 200%;">
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        onclick="window.location.href='static/crm/login.jsp';">更新
+                <button type="button" class="btn btn-primary" id="updatePwdBtn">更新
                 </button>
             </div>
         </div>
@@ -159,11 +225,11 @@
                     <span class="glyphicon glyphicon-user"></span> ${user.name} <span class="caret"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="static/crm/settings/index.html"><span class="glyphicon glyphicon-wrench"></span>
+                    <li><a href="settings/index.do"><span class="glyphicon glyphicon-wrench"></span>
                         系统设置</a></li>
                     <li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span
                             class="glyphicon glyphicon-file"></span> 我的资料</a></li>
-                    <li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span
+                    <li><a href="javascript:void(0)" id="openEditPwdModal"><span
                             class="glyphicon glyphicon-edit"></span> 修改密码</a></li>
                     <li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span
                             class="glyphicon glyphicon-off"></span> 退出</a></li>

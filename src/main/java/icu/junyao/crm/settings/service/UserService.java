@@ -24,4 +24,19 @@ public interface UserService {
      * @throws RegisterException 可能会抛出账号已存在异常
      */
     void register(User user) throws RegisterException;
+
+    /**
+     * 通过用户id获取用户密码 加密后的密码
+     * @param id 用户
+     * @return 密码
+     */
+    String getPwdById(String id);
+
+    /**
+     * 更新用户密码
+     * @param newPwd 加密后的新密码
+     * @param id 用户id
+     * @return 更新成功的条数
+     */
+    int updatePwd(String newPwd, String id);
 }

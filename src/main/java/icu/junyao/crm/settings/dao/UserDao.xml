@@ -39,6 +39,12 @@
                 #{createTime},
                 #{createBy})
     </insert>
+    <select id="getPwdById" resultType="string">
+        select loginPwd from tbl_user where id=#{id}
+    </select>
+    <update id="updatePwd">
+        update tbl_user set loginPwd=#{newPwd} where id=#{id}
+    </update>
 </mapper>
 
 

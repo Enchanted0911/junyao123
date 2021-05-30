@@ -52,4 +52,14 @@ public class UserServiceImpl implements UserService {
             throw new RegisterException("账号注册失败!");
         }
     }
+
+    @Override
+    public String getPwdById(String id) {
+        return userDao.getPwdById(id);
+    }
+
+    @Override
+    public int updatePwd(String newPwd, String id) {
+        return userDao.updatePwd(newPwd, id);
+    }
 }

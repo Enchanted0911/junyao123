@@ -1,5 +1,6 @@
 package icu.junyao.crm.settings.web.controller;
 
+import com.fasterxml.jackson.databind.ext.SqlBlobSerializer;
 import icu.junyao.crm.exception.LoginException;
 import icu.junyao.crm.exception.RegisterException;
 import icu.junyao.crm.settings.domain.User;
@@ -60,6 +61,34 @@ public class UserController {
         map.put("success", true);
         map.put("view", "settings/workbenchIndex.do");
         return map;
+    }
+
+    @RequestMapping("/updatePwd.do")
+    @ResponseBody
+    public Map<String, Boolean> updatePwd(String oldPwd, String newPwd, String id) {
+        Map<String, Boolean> map = new HashMap<>(8);
+        oldPwd = MD5Util.getMD5(oldPwd);
+        newPwd = MD5Util.getMD5(newPwd);
+        if (oldPwd.equals(userService.getPwdById(id))) {
+            map.put("flag", true);
+            map.put("flag1", userService.updatePwd(newPwd, id) == 1);
+        } else {
+            map.put("flag", false);
+        }
+        return map;
+    }
+
+    @RequestMapping("/qxIndex.do")
+    public String qxIndex() {
+        return "qx/index";
+    }
+    @RequestMapping("/deptIndex.do")
+    public String deptIndex() {
+        return "dept/index";
+    }
+    @RequestMapping("/index.do")
+    public String index() {
+        return "settings/index";
     }
 
 

@@ -28,4 +28,19 @@ public interface UserDao {
      * @return 返回 1 表示添加成功
      */
     int register(User user);
+
+    /**
+     * 通过用户id获取用户加密后的密码
+     * @param id 用户id
+     * @return 密码
+     */
+    String getPwdById(String id);
+
+    /**
+     * 更新用户密码
+     * @param newPwd 加密后的新密码
+     * @param id 用户id
+     * @return 更新成功的条数
+     */
+    int updatePwd(@Param("newPwd") String newPwd, @Param("id") String id);
 }

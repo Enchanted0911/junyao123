@@ -87,6 +87,25 @@
             // 页面加载完毕, 展现该任务关联的备注信息列表
             showRemarkList();
 
+            // 删除操作
+            $("#deleteBtn").click(function () {
+                if (confirm("确定删除该条任务记录吗 ? ")) {
+                    let param = "id=${task.id}";
+                    $.ajax({
+                        url: "workbench/visit/delete.do",
+                        data: param,
+                        type: "post",
+                        success: function (data) {
+                            if (data === "true") {
+                                alert("删除成功, 即将会回到交易主界面");
+                                window.location.href = "settings/visitIndex.do";
+                            } else {
+                                alert("sorry!删除任务失败 !");
+                            }
+                        }
+                    })
+                }
+            });
             // 添加备注操作
             $("#remarkSaveBtn").click(function () {
                 if ($.trim($("#remark").val()) === "") {
@@ -240,10 +259,10 @@
         <h3>拜访客户</h3>
     </div>
     <div style="position: relative; height: 50px; width: 250px;  top: -72px; left: 700px;">
-        <button type="button" class="btn btn-default" onclick="window.location.href='settings/visitEditTask.do';"><span
+        <button type="button" class="btn btn-default" onclick="window.location.href='workbench/visit/getUserListAndTask.do?id=' + '${task.id}';"><span
                 class="glyphicon glyphicon-edit"></span> 编辑
         </button>
-        <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+        <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
     </div>
 </div>
 
